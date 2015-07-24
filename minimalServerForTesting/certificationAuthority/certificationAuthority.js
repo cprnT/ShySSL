@@ -10,7 +10,7 @@ var fs = require ('fs');
 
 var writeFileAsync = Q.denodeify(fs.writeFile);
 var mkdirAsync     = Q.denodeify(fs.mkdir);
-var requestUrl     = "www.certificationAuthority.net/request";
+var requestUrl     = "localhost:3000";
 var readFileAsync  = Q.denodeify(fs.readFile);
 var authorityConfiguration = {};
 function generateIdentity ( code ) {
@@ -217,16 +217,21 @@ function generatePendingRequest(organizationInformation) {
     }
 
     function attachSecrets(secrets){
-        console.log(i++ +'\n');
 
         organizationInformation.code   = secrets[0].toString('base64');
         organizationInformation.key    = secrets[1].toString('base64');
     }
 
     function attachMagicCode(){
-        console.log(i++ +'\n');
+        organizationInformation.magicCode = JSON.stringify({
+            url:requestUrl,
+            code: organizationInformation.code,
+            key: organizationInformation.key
+        });
 
-        organizationInformation.magicCode = (new Buffer(requestUrl+" "+organizationInformation.code+" "+organizationInformation.key)).toString('base64');
+        organizationInformation.magicCode = new Buffer(organizationInformation.magicCode).toString('base64');
+
+        console.log(">>>>>>>>>>>>>>>>>>>>", organizationInformation.magicCode);
     }
 
     function treatErrors(error){
@@ -313,7 +318,6 @@ function absolutizeFileStructure(){
 }
 
 function setupAuthority(customConfiguration){
-    console.log('Setup authority\n');
     function createConfigurationFile(){
         function generateContent(){
             var content = '[ca]\ndefault_ca = '+authorityConfiguration.default_ca+'\n\n'+'[ '+authorityConfiguration.default_ca+' ]\n\n';
@@ -454,4 +458,4 @@ function loadConfigurationOptions(){
 exports.generateIdentity              = generateIdentity;
 exports.setupAuthority                = setupAuthority;
 exports.generateCertificationRequest  = generatePendingRequest;
-
+setupAuthority();
