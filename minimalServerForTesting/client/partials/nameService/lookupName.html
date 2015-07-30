@@ -1,0 +1,17 @@
+
+<form novalidate class="simple-form">
+    <form role="form">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Enter the name" ng-model="information.name" ng-required>
+        </div>
+        <button type="submit" ng-click="lookup()" class="btn btn-primary" >Lookup</button>
+    </form>
+</form>
+<br>
+<br>
+{{name}}
+<br>
+<br>
+<ul ng-repeat="(key,value) in response">
+    <li>{{key}} : {{value}}</li>
+</ul>
