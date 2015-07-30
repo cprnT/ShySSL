@@ -10,10 +10,9 @@ var fs = require ('fs');
 
 var writeFileAsync = Q.denodeify(fs.writeFile);
 var mkdirAsync     = Q.denodeify(fs.mkdir);
-var requestUrl     = "localhost:3000/request";
+var requestUrl     = "localhost:3000";
 var readFileAsync  = Q.denodeify(fs.readFile);
 var authorityConfiguration = {};
-
 function generateIdentity ( code ) {
     loadConfigurationOptions();
     var data = {};
@@ -218,16 +217,21 @@ function generatePendingRequest(organizationInformation) {
     }
 
     function attachSecrets(secrets){
-        console.log(i++ +'\n');
 
         organizationInformation.code   = secrets[0].toString('base64');
         organizationInformation.key    = secrets[1].toString('base64');
     }
 
     function attachMagicCode(){
-        console.log(i++ +'\n');
+        organizationInformation.magicCode = JSON.stringify({
+            url:requestUrl,
+            code: organizationInformation.code,
+            key: organizationInformation.key
+        });
 
-        organizationInformation.magicCode = (new Buffer(requestUrl+" "+organizationInformation.code+" "+organizationInformation.key)).toString('base64');
+        organizationInformation.magicCode = new Buffer(organizationInformation.magicCode).toString('base64');
+
+        console.log(">>>>>>>>>>>>>>>>>>>>", organizationInformation.magicCode);
     }
 
     function treatErrors(error){
