@@ -63,11 +63,8 @@ function generateIdentity ( code ) {
             }
             return false;
         };
-
         console.log('creating directory\n');
-
         data.organization = extractOrganizationFromConfiguration(data.configuration);
-
         return mkdirAsync(authorityConfiguration.fileStructure.new_certs_dir+ "/" + data.organization);
 
     }
