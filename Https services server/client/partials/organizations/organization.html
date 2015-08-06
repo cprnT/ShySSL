@@ -1,0 +1,33 @@
+<ul style="float:left">
+    <li>
+     <button type="submit" ng-click="askNameService()" class="btn btn-primary" >See name information</button>
+    <ul ng-show="hasNameInfo" ng-repeat="(key,value) in nameServiceResponse">
+            <div>{{key}} : {{value}}</div>
+        </ul>
+        <div ng-show="nsUnavailable">
+            No information available
+        </div>
+    </li>
+
+    <li>
+    <button type="submit" ng-click="askForConfigurations()" class="btn btn-primary" > Check available configurations</button>
+    <ul ng-show="hasConfigurations" ng-repeat="usage in usages">
+            <a ng-click = "seeConfiguration(usage)">
+                {{usage}}
+            </a>
+            <div ng-show = "fetchedConfiguration[usage]">
+                {{configs[usage]}}
+                <br>
+            </div>
+    </ul>
+
+    <div ng-show="configurationsUnavailable">
+        No configurations available
+    </div>
+    </li>
+
+    <li>
+        <a href="http://localhost:3000/fetchIdentity/{{selectedOrganization}}" class="btn btn-primary">Get Identity</a>
+    </li>
+</ul>
+

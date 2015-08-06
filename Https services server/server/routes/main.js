@@ -22,22 +22,31 @@ module.exports=function(app) {
 
         var code = req.params.code;
         certAuthority.generateIdentity(code).
-            then(packFiles).
+            then(packFiles,function(error){res.json(error)}).
             then(function(zip){
                 res.download(zip);
             }
         );
     });
-    app.get('/setupCertificationAuthority',function(req,res){
+
+    app.post('/setupCertificationAuthority',function(req,res){
         console.log('Setup certification authority\n');
-        certAuthority.setupAuthority();
-        res.sendStatus(200);
+        certAuthority.setupAuthority(req.body).
+            then(function(){res.sendStatus(200)},function(error){res.json(error);});
     });
+
+    app.post('/registerForCertification',function(req,res){
+        certAuthority.generateCertificationRequest(req.body).
+            then
+            (function(magicCode) {console.log(magicCode);res.send(magicCode)},
+            function(error){res.json(error)});
+    });
+
 
     app.post('/setupNameService',function(req,res){
         console.log('Setup name service\n');
-        nameService.setup(req.body);
-        res.sendStatus(200);
+        nameService.setup(req.body).
+            then(function(){res.sendStatus(200)});
     });
 
     app.get('/lookup/:organization',function(req,res) {

@@ -8,7 +8,7 @@ var util = require('util');
 var writeFileAsync = Q.denodeify(fs.writeFile);
 var mkdirAsync     = Q.denodeify(fs.mkdir);
 var readFileAsync  = Q.denodeify(fs.readFile);
-
+var readDirAsync   = Q.denodeify(fs.readdir);
 var serviceConfiguration  = {
     isLoaded : false
 };
@@ -55,7 +55,8 @@ function loadService(path){
     setConfiguration(loadConfiguration(path));
 }
 
-registerOrganization = function(organizationInformation){
+
+function registerOrganization(organizationInformation){
     if(!fs.existsSync(__dirname+'/config.cnf')){
         throw 'Name service unavailable'
     }
@@ -105,7 +106,7 @@ registerOrganization = function(organizationInformation){
     return persistInformation(  serviceConfiguration.storage,
                                 extractPersistenceOptions(serviceConfiguration.storage,organizationInformation),
                                 extractInformationToBePersisted(organizationInformation));
-};
+}
 
 function lookUp(organization){
     if(!serviceConfiguration.isLoaded){
@@ -115,7 +116,17 @@ function lookUp(organization){
             then(function(organizationString){return JSON.parse(organizationString)});
 }
 
+function retrieveAllNames(){
+    if(!serviceConfiguration.isLoaded){
+        loadService(__dirname+'/config.cnf');
+    }
+    return readDirAsync(__dirname+'/storage');
+}
+
+
 exports.lookup               = lookUp;
 exports.registerOrganization = registerOrganization;
 exports.setup                = setup;
+exports.retrieveAllNames     = retrieveAllNames;
 
+setup();

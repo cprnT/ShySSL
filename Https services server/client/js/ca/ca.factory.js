@@ -2,24 +2,24 @@
  * Created by Ciprian on 7/28/15.
  */
 
-myApp.factory('nameServiceFactory',function($rootScope,$location,$http){
+myApp.factory('certificationAuthorityFactory',function($rootScope,$location,$http){
     return{
-        setupNameService:function(configuration){
+        registerForCertification:function(organization){
 
-            function validateConfiguration(configuration){
+            function validateOrganization(organization){
                 return true;
             }
 
-            if(validateConfiguration(configuration)){
-                return $http.post('http://localhost:3000/setupNameService',configuration);
+            if(validateOrganization(organization)){
+                return $http.post('http://localhost:3000/registerForCertification',organization);
             }
             else{
-                throw 'Invalid configuration'
+                throw 'Invalid data for organization'
             }
 
         },
 
-        register:function(nameRegistration){
+        getCertificate:function(magicCode){
 
             function validateNameRegistration(nameRegistration) {
 
@@ -57,6 +57,7 @@ myApp.factory('nameServiceFactory',function($rootScope,$location,$http){
                 return true;
             }
 
+            var information = JSON.parse(magicCode.toString('ASCII'));
             if(validateNameRegistration(nameRegistration)){
                 return $http.post('http://localhost:3000/registerName',nameRegistration);
             }
@@ -66,7 +67,7 @@ myApp.factory('nameServiceFactory',function($rootScope,$location,$http){
 
         },
 
-        lookup:function(name){
+        setupCertificationAuthority:function(name){
             function validateName(name){
                 return name !== '';
             }
@@ -78,6 +79,11 @@ myApp.factory('nameServiceFactory',function($rootScope,$location,$http){
                 throw 'Invalid name'
             }
 
+        },
+
+        fetchIdentity:function(name){
+            return $http.get("http://localhost:3000/fetchIdentity/"+name);
         }
+
     }
 });

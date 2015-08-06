@@ -1,0 +1,38 @@
+<form novalidate class="simple-form">
+    <div class="row">
+        <div class="col-md-12">
+            <form role="form">
+
+                <div class="form-group">
+                    <label >Organization</label>
+                    <input type="text" class="form-control" placeholder="Enter the organizationName" ng-model="organization.O" ng-required>
+                </div>
+
+                <div class="form-group">
+                    <label >Email address</label>
+                    <input type="text" class="form-control" placeholder="Enter the emailAddress" ng-model="organization.emailAddress">
+                </div>
+                <div class="form-group">
+                    <label ></label>
+                    <input type="text" class="form-control" placeholder="Enter the countryName" ng-model="organization.C">
+                </div>
+
+                <div class="form-group">
+                    <label >stateOrProvinceName</label>
+                    <input type="text" class="form-control"  placeholder="Enter the stateOrProvinceName" ng-model="organization.L">
+                </div>
+                <div class="form-group">
+                    <label >organizationalUnitName</label>
+                    <input type="text" class="form-control" placeholder="Enter the organizationalUnitName" ng-model="organization.OU">
+                </div>
+                <div class="form-group">
+                    <label >stateOrProvinceName</label>
+                    <input type="text" class="form-control"  placeholder="Enter the commonName" ng-model="organization.CN">
+                </div>
+
+                <button type="submit" ng-click="registerForCertification()" class="btn btn-primary" >Request certificate</button>
+            </form>
+        </div>
+    </div>
+</form>
+

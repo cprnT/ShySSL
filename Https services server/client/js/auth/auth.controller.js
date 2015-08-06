@@ -22,7 +22,7 @@ myApp.controller('LoginCtrl', ['$scope','$rootScope', '$window', '$location', 'U
 
 
           $rootScope.logoutButtonVsibility="visibility:visible";
-          $rootScope.fetchCertificates();
+          $rootScope.displayOrganizations();
         }).error(function(status) {
           alert('Oops something went wrong!');
         });

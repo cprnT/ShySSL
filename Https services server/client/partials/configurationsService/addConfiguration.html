@@ -1,0 +1,37 @@
+<div class="row">
+    <div class="col-md-12">
+        <form role="form">
+            <div class="form-group">
+                <label for="Organization"></label>
+                <input type="text" ng-blur = "getUsages()" ng-model="configuration.organization" class="form-control"  placeholder="Enter the organization">
+            </div>
+
+            <div class="form-group">
+                <label>Select configuration usage</label>
+                <select  ng-model="configuration.usage" ng-change="retrieveConfiguration()">
+                    <option ng-repeat="usage in usages" value= "{{usage}}">
+                        {{usage}}
+                    </option>
+                </select>
+
+                <button ng-click =  "showNewUsage()">add new usage</button>
+                <div class="form-group" ng-show="newUsage">
+                    <label for="Organization"></label>
+                    <input type="text" ng-model="configuration.usage" class="form-control"  placeholder="Add new usage">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Configuration</label><br>
+                <textarea cols="50" rows="10" ng-model="configuration.content"></textarea>
+                <p class="help-block">e.g. {"key1":"value1","key2":"value2"}</p>
+            </div>
+
+            <div>
+                <input type="submit" value="Submit" ng-click="addNewConfiguration()"/>
+                <div  style="color:#00FF00" ng-show="submissionSuccess">Succesful!</div>
+                <div  style="color:#B22222" ng-show="submissionFailure">Unsuccesful submition!</div>
+            </div>
+        </form>
+    </div>
+</div>

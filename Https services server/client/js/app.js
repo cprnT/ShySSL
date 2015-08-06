@@ -24,6 +24,9 @@ myApp.config(function($routeProvider, $httpProvider) {
               requiredLogin: false
           }
 
+
+
+
       }).when('/certificates/organization/:organization', {
           templateUrl: 'partials/certificationAuthority/certificate.html',
           controller: 'certificateController',
@@ -36,14 +39,18 @@ myApp.config(function($routeProvider, $httpProvider) {
           access: {
               requiredLogin: false
           }
-      }).when('/certificateOrganization',{
-          templateUrl:'partials/certificationAuthority/certificateOrganization.html',
-          controller :'setupCertificationAuthorityController',
+      }).when('/registerForCertification',{
+          templateUrl:'partials/certificationAuthority/registerForCertification.html',
+          controller :'registerForCertificationController',
           access: {
               requiredLogin: false
           }
-
-
+      }).when('/getCertification',{
+          templateUrl:'partials/certificationAuthority/getCertification.html.html',
+          controller :'getCertification',
+          access: {
+              requiredLogin: false
+          }
 
       }).when('/setupNameService',{
           templateUrl:'partials/nameService/setupNameService.html',
@@ -51,17 +58,33 @@ myApp.config(function($routeProvider, $httpProvider) {
           access: {
               requiredLogin: false
           }
+
       }).when('/registerName', {
           templateUrl:'partials/nameService/registerName.html',
           controller :'registerNameController',
           access: {
               requiredLogin: false
           }
+
       }).when('/lookupName',{
           templateUrl:'partials/nameService/lookupName.html',
           controller :'lookupNameController',
           access:{
               requiredLogin:false
+          }
+
+      }).when('/configurations', {
+          templateUrl: 'partials/configurationsService/addConfiguration.html',
+          controller: 'addConfigurationController',
+          access: {
+              requiredLogin: false
+          }
+
+      }).when('/organizations/:organization',{
+        templateUrl:'partials/organizations/organization.html',
+          controller:'organizationController',
+          access:{
+                requiredLogin:false
           }
       }).otherwise({
           redirectTo: '/login'
@@ -69,46 +92,28 @@ myApp.config(function($routeProvider, $httpProvider) {
 });
 
 
-myApp.run(function($rootScope, $window, $http, $location, AuthenticationFactory,UserAuthFactory,dataFactory) {
+myApp.run(function($rootScope, $window, $http, $location, AuthenticationFactory,UserAuthFactory,nameServiceFactory) {
 
     $rootScope.loginMessage="Certificates will be displayed after you log in";
     $rootScope.logoutButtonVsibility="visibility:hidden";
-    $rootScope.certificates=[];
 
+    $rootScope.selectedOrganization =$window.sessionStorage.selectedOrganization;
 
-    $rootScope.fetchCertificates = function () {
-        //to fetch the certificates see DataFactory!!!... for the moment just hardcode them
-        $rootScope.loginMessage="Certificates";
-        certificates=$rootScope.certificates;
-        certificates.push(
-            {
-                organization: "aaa"
-            }
-        );
-        certificates.push(
-            {
-                organization: "bbb"
-            }
-        );
-        certificates.push(
-            {
-                organization: "ccc"
-            }
-        );
-        certificates.push(
-            {
-                organization: "ddd"
-            }
-        );
-        certificates.push(
-            {
-                organization: "eee"
-            }
-        )
+    $rootScope.updateSelectedOrganization = function(org){
+        $rootScope.selectedOrganization = org;
+        $window.sessionStorage.selectedOrganization = org;
     };
+    $rootScope.displayOrganizations = function () {
+        //to fetch the certificates see DataFactory!!!... for the moment just hardcode them
+        $rootScope.loginMessage="Organizations:";
+        nameServiceFactory.retrieveAllNames().then(function(names){
+            $rootScope.organizations=names.data;
+        })
+        };
 
 
     $rootScope.logout = function () {
+        $rootScope.organizations = [];
         UserAuthFactory.logout();
     };
   // when the page refreshes, check if the user is already logged in and if so reFetch the certificates
@@ -117,10 +122,10 @@ myApp.run(function($rootScope, $window, $http, $location, AuthenticationFactory,
   AuthenticationFactory.check();
     if(AuthenticationFactory.isLogged) {
         $rootScope.logoutButtonVsibility="visibility:visible";
-        $rootScope.fetchCertificates();
+        $rootScope.displayOrganizations();
     }
 
-  $rootScope.$on("$routeChangeStart", function(event, nextRoute, currentRoute) {
+  $rootScope.$on("$routeChangeStart", function(event, nextRoute) {
     if ((nextRoute.access && nextRoute.access.requiredLogin) && !AuthenticationFactory.isLogged) {
       $location.path("/login");
     } else {
@@ -130,12 +135,15 @@ myApp.run(function($rootScope, $window, $http, $location, AuthenticationFactory,
     }
   });
 
-  $rootScope.$on('$routeChangeSuccess', function(event, nextRoute, currentRoute) {
+  $rootScope.$on('$routeChangeSuccess', function() {
     $rootScope.showMenu = AuthenticationFactory.isLogged;
     $rootScope.role = AuthenticationFactory.userRole;
-    // if the user is already logged in, take him to the home page
-    if (AuthenticationFactory.isLogged == true && $location.path() == '/login') {
-      $location.path('/');
+    if(AuthenticationFactory.isLogged) {
+        $rootScope.displayOrganizations();
+        // if the user is already logged in, take him to the home page
+        if ($location.path() == '/login') {
+            $location.path('/');
+        }
     }
   });
 });

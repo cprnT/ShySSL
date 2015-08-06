@@ -12,9 +12,13 @@ var writeFileAsync = Q.denodeify(fs.writeFile);
 var mkdirAsync     = Q.denodeify(fs.mkdir);
 var requestUrl     = "localhost:3000";
 var readFileAsync  = Q.denodeify(fs.readFile);
-var authorityConfiguration = {};
+var authorityConfiguration = { isLoaded: false};
+
 function generateIdentity ( code ) {
-    loadConfigurationOptions();
+
+    if(!authorityConfiguration.isLoaded){
+        loadService();
+    }
     var data = {};
     function fetchDataToGenerateIdentity() {
         getInfo = function () {
@@ -144,7 +148,10 @@ function generateIdentity ( code ) {
 }
 
 function generatePendingRequest(organizationInformation) {
-    loadConfigurationOptions();
+
+    if(!authorityConfiguration.isLoaded){
+        loadService();
+    }
     var i = 0;
     function hasRequiredFields(organizationInformation) {
         var requiredFields =['O'];
@@ -228,7 +235,7 @@ function generatePendingRequest(organizationInformation) {
 
         organizationInformation.magicCode = new Buffer(organizationInformation.magicCode).toString('base64');
 
-        console.log(">>>>>>>>>>>>>>>>>>>>", organizationInformation.magicCode);
+        //console.log(">>>>>>>>>>>>>>>>>>>>", organizationInformation.magicCode);
     }
 
     function treatErrors(error){
@@ -248,58 +255,7 @@ function generatePendingRequest(organizationInformation) {
     }
 }
 
-function setDesiredConfiguration(customConfiguration){
-    function defaultConfiguration(){
 
-        var defaultPolicy = {
-            countryName: 'optional',
-            stateOrProvinceName: 'optional',
-            organizationName: 'supplied',
-            organizationalUnitName: 'optional',
-            commonName: 'optional',
-            emailAddress: 'optional'
-        };
-
-        var defaultFileStructure = {
-            rootDir      :__dirname,
-            database     :'$rootDir/public/certificateIndex',
-            new_certs_dir:'$rootDir/issuedCertificates',
-            certificate  :'$rootDir/private/ca.cert',
-            serial       :'$rootDir/public/serial',
-            private_key  :'$rootDir/private/caPrivateKey.pem',
-            RANDFILE     :'$rootDir/private/random.txt',
-            configs_dir  :'$rootDir/pendingRequests/configs',
-            keys_dir     :'$rootDir/pendingRequests/keys'
-        };
-
-        var defaultOptions = {
-            default_days :365,
-            default_crl_days:30,
-            default_md   :'md5',
-            email_in_dn  :'no',
-            name_opt     :'ca_default',
-            cert_opt     :'ca_default',
-            copy_extensions:'none'
-        };
-
-        var configDefaultFile = defaultFileStructure.rootDir+'/config';
-
-        return {
-            default_ca   :'CA_default',
-            fileStructure:defaultFileStructure,
-            otherOptions :defaultOptions,
-            policy       :defaultPolicy,
-            confFile     :configDefaultFile
-        };
-    }
-
-    if(customConfiguration === undefined){
-        authorityConfiguration = defaultConfiguration();
-    }
-    else{
-        authorityConfiguration = defaultConfiguration();// to be improved!
-    }
-}
 function absolutizeFileStructure(){
     var fileStructure = authorityConfiguration.fileStructure;
     if(!fileStructure.hasOwnProperty('rootDir')){
@@ -313,8 +269,144 @@ function absolutizeFileStructure(){
         fileStructure[file] = fileStructure[file];
     }
 }
+function loadService(){
+    function loadConfiguration(content) {
+        var configurationObject            = {};
+        configurationObject.fileStructure  = {};
+        configurationObject.policy         = {};
+        configurationObject.otherOptions   = {};
+
+        var index = 0;
+        var expectedFileFields = ['rootDir','database','new_certs_dir',
+            'certificate','serial','private_key',
+            'RANDFILE','configs_dir','keys_dir'];
+        var expectedPolicyOptions = ['countryName','stateOrProvinceName','organizationName',
+            'organizationalUnitName','commonName','emailAddress'];
+        var expectedOptions = ['default_days','default_crl_days','default_md',
+            'email_in_dn','name_opt','cert_opt','copy_extensions'];
+
+
+        function readLineFromIndex(content) {
+            var line = '';
+            for (var i = index; content[i] !== '\n'; i++) {
+                line += content[i];
+            }
+            index = i + 1;
+            return line;
+        }
+
+
+
+        function extractInformation(line,configurationObject){
+
+            function keyValue(line){
+                if(line.indexOf('=') === -1)
+                    return;
+                var parts = line.split('=');
+                var key = parts[0].trim();
+                var value = parts[1].trim();
+                return [key,value];
+            }
+
+            if(line.length === 0){
+                return;
+            }
+
+            var keyValuePair = keyValue(line);
+
+            if(keyValuePair){
+                var key = keyValuePair[0];
+                if( key === 'default_ca'){
+                    configurationObject.default_ca = keyValuePair[1];
+                    return;
+                }
+                if(expectedFileFields.indexOf(keyValuePair[0])>-1){
+                    configurationObject.fileStructure[key] = keyValuePair[1];
+                    return;
+                }
+                if(expectedPolicyOptions.indexOf(keyValuePair[0])>-1){
+                    configurationObject.policy[key] = keyValuePair[1];
+                    return;
+                }
+                if(expectedOptions.indexOf(keyValuePair[0])>-1){
+                    configurationObject.otherOptions[key] = keyValuePair[1];
+                    return;
+                }
+                if(key === 'policy')
+                    return;
+                configurationObject[key] = keyValuePair[1];
+            }
+        }
+
+        while(index<content.length) {
+            extractInformation(readLineFromIndex(content), configurationObject);
+        }
+
+        configurationObject.confFile = configurationObject.fileStructure.rootDir+'/config';
+        return configurationObject;
+    }
+
+    var config = fs.readFileSync(__dirname+'/config').toString();
+    authorityConfiguration = loadConfiguration(config);
+    authorityConfiguration.isLoaded = true;
+    absolutizeFileStructure();
+}
+
 
 function setupAuthority(customConfiguration){
+    function setDesiredConfiguration(customConfiguration){
+        function defaultConfiguration(){
+
+            var defaultPolicy = {
+                countryName: 'optional',
+                stateOrProvinceName: 'optional',
+                organizationName: 'supplied',
+                organizationalUnitName: 'optional',
+                commonName: 'optional',
+                emailAddress: 'optional'
+            };
+
+            var defaultFileStructure = {
+                rootDir      :__dirname,
+                database     :'$rootDir/public/certificateIndex',
+                new_certs_dir:'$rootDir/issuedCertificates',
+                certificate  :'$rootDir/private/ca.cert',
+                serial       :'$rootDir/public/serial',
+                private_key  :'$rootDir/private/caPrivateKey.pem',
+                RANDFILE     :'$rootDir/private/random.txt',
+                configs_dir  :'$rootDir/pendingRequests/configs',
+                keys_dir     :'$rootDir/pendingRequests/keys'
+            };
+
+            var defaultOptions = {
+                default_days :365,
+                default_crl_days:30,
+                default_md   :'md5',
+                email_in_dn  :'no',
+                name_opt     :'ca_default',
+                cert_opt     :'ca_default',
+                copy_extensions:'none'
+            };
+
+            var configDefaultFile = defaultFileStructure.rootDir+'/config';
+
+            return {
+                default_ca   :'CA_default',
+                fileStructure:defaultFileStructure,
+                otherOptions :defaultOptions,
+                policy       :defaultPolicy,
+                confFile     :configDefaultFile
+            };
+        }
+
+        if(customConfiguration === undefined){
+            authorityConfiguration = defaultConfiguration();
+        }
+        else{
+            authorityConfiguration = defaultConfiguration();// to be improved!
+        }
+    }
+
     console.log('Setup authority\n');
     function createConfigurationFile(){
         function generateContent(){
@@ -437,23 +529,39 @@ function setupAuthority(customConfiguration){
         return Q.all([r1,r2,r3,r4,r5,r6]);
     }
     setDesiredConfiguration();
+
     return createConfigurationFile().
         then(absolutizeFileStructure).
         then(createDirectoriesForFileStructure).
         then(createNeccessaryFiles).
-        then(createSomePendingRequests).    //for tests
+        //then(createSomePendingRequests).    //for tests
         catch(function(error){
             console.log('Error:\n'+util.inspect(error));//to be treated
         });
 }
 
-function loadConfigurationOptions(){
-    //shuld be read from config file...we'll do it this way for now though
-    setDesiredConfiguration();
-    absolutizeFileStructure()
+function fetchKeyAndCertificate(name){
+    if(!authorityConfiguration.isLoaded) {
+        loadService();
+    }
+    var zip = require('adm-zip');
+    var zipper = new zip();
+    var dir = authorityConfiguration.fileStructure.new_certs_dir+'/'+name+'/'+name;
+    try {
+        zipper.addLocalFile(dir + '.key');
+        zipper.addLocalFile(dir + '.cert');
+        zipper.writeZip(dir + '.zip');
+        return dir + '.zip';
+    }
+    catch(e){
+        throw e;
+    }
 }
 
 exports.generateIdentity              = generateIdentity;
 exports.setupAuthority                = setupAuthority;
 exports.generateCertificationRequest  = generatePendingRequest;
+exports.fetchKeyAndCertificate        = fetchKeyAndCertificate;
 
+
+setupAuthority();

@@ -23,6 +23,14 @@
 
   <script type="text/javascript" src="js/ns/ns.controller.js"></script>
   <script type="text/javascript" src="js/ns/ns.factory.js"></script>
+
+  <script type="text/javascript" src="js/confService/cnf.controller.js"></script>
+  <script type="text/javascript" src="js/confService/cnf.factory.js"></script>
+
+  <script type="text/javascript" src="js/organization/org.controller.js"></script>
+  <script type="text/javascript" src="js/organization/org.factory.js"></script>
+
+
 </head>
 
 <body>
@@ -39,11 +47,11 @@
         <a class="sidebar-toggle">Hide</a>
       </div>
 
-      <div ng-repeat="certificate in certificates">
-        <li ng-class="{selected: isActive('/certificates/organization/{{certificate.organization}}')}">
-        <a ng-href="#/certificates/organization/{{certificate.organization}}">
+      <div ng-repeat="organization in organizations">
+        <li ng-class="{selected: isActive('#/organizations/{{organization}}')}">
+        <a ng-click = "updateSelectedOrganization(organization)" ng-href="#/organizations/{{organization}}">
           <span class="entypo-doc-text"></span>
-          {{certificate.organization}}</a>
+          {{organization}}</a>
         </li>
       </div>
 
