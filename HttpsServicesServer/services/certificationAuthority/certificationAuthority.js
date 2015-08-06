@@ -564,4 +564,3 @@ exports.generateCertificationRequest  = generatePendingRequest;
 exports.fetchKeyAndCertificate        = fetchKeyAndCertificate;
 
 
-setupAuthority();

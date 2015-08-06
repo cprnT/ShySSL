@@ -2,7 +2,7 @@
  * Created by Ciprian on 8/3/15.
  */
 
-var nameService = require('../services/nameService/nameService.js');
+var nameService = require('./nameService/nameService.js');
 
 exports.setupNameService = function(req,res){
     console.log('Setup name service\n');

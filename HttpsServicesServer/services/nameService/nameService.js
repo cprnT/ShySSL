@@ -129,4 +129,3 @@ exports.registerOrganization = registerOrganization;
 exports.setup                = setup;
 exports.retrieveAllNames     = retrieveAllNames;
 
-setup();

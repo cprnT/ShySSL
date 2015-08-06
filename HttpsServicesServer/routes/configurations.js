@@ -1,7 +1,7 @@
 /**
  * Created by Ciprian on 8/3/15.
  */
-var configs = require('../services/configurationsService/configurationService.js');
+var configs = require('./configurationsService/configurationService.js');
 
 exports.retrieveConfiguration = function (req,res){
 

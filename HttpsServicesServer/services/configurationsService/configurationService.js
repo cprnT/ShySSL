@@ -17,7 +17,7 @@ var config = { isLoaded: false};
 
 function setupConfigurationService(configuration){
     if(configuration === undefined) {
-        var storageDir = fs.mkdirSync(__dirname + '/configurations');
+        fs.mkdirSync(__dirname + '/configurations');
     }
     //should be able to customize... we'll go with this for now
 }

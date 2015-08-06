@@ -14,15 +14,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(logger('dev'));
 
-/*
-var cors = require('express-cors');
-
-app.use(cors({
-    allowedOrigins: [
-        'localhost:63342'
-    ]
-}));
-*/
 
 app.all('/*', function(req, res, next) {
     // CORS headers
@@ -40,6 +31,7 @@ app.all('/*', function(req, res, next) {
 app.all('sensitive/*',[require('./middlewares/validateRequest.js')]);
 
 app.use('/',require('./routes/router.js'));
+app.use(express.static('../webClient'));
 
 app.use(function(req,res,next){
    var err = new Error ('Not found');

@@ -3,7 +3,7 @@
  */
 
 
-var certAuthority = require('../services/certificationAuthority/certificationAuthority.js');
+var certAuthority = require('./certificationAuthority/certificationAuthority.js');
 var zip      = require('adm-zip');
 var fs            = require('fs');
 

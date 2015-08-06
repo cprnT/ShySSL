@@ -12,6 +12,23 @@ var certificates = require('./certificates.js');
 var configurations= require('./configurations.js');
 var authentication = require('./authentication.js');
 
+function setupServer(req,res){
+    var nameService = require('../services/nameService/nameService.js');
+    var certAuthority = require('../services/certificationAuthority/certificationAuthority.js');
+    var confService = require('../services/configurationsService/configurationService.js');
+
+    try {
+        nameService.setup(req.body.nameServiceConfiguration);
+        certAuthority.setupAuthority(req.body.certificationAuthorityConfiguration);
+        confService.setupConfigService(req.body.configurationsServiceConfigurations);
+        res.sendStatus(200);
+    }
+    catch(e){
+        res.json(e);
+    }
+}
+
+router.get('/setupServer',setupServer);
 
 router.post('/setupCertificationAuthority',certificates.setupCertificationAuthority);
 router.post('/registerForCertification',certificates.registerForCertification);
