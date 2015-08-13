@@ -247,7 +247,8 @@ function generatePendingRequest(organizationInformation) {
             then(attachSecrets).
             then(attachMagicCode).
             then(persistOrganizationInformation).
-            then(function(){return organizationInformation.code}).   //to use it in identityGeneration
+            then(function(){return {
+                magicCode:organizationInformation.magicCode}}).   //to use it in identityGeneration
             catch(treatErrors);
     }
     else{
@@ -342,11 +343,11 @@ function loadService(){
             extractInformation(readLineFromIndex(content), configurationObject);
         }
 
-        configurationObject.confFile = configurationObject.fileStructure.rootDir+'/config';
+        configurationObject.confFile = configurationObject.fileStructure.rootDir+'/config.cnf';
         return configurationObject;
     }
 
-    var config = fs.readFileSync(__dirname+'/config').toString();
+    var config = fs.readFileSync(__dirname+'/config.cnf').toString();
     authorityConfiguration = loadConfiguration(config);
     authorityConfiguration.isLoaded = true;
     absolutizeFileStructure();
@@ -388,7 +389,7 @@ function setupAuthority(customConfiguration){
                 copy_extensions:'none'
             };
 
-            var configDefaultFile = defaultFileStructure.rootDir+'/config';
+            var configDefaultFile = defaultFileStructure.rootDir+'/config.cnf';
 
             return {
                 default_ca   :'CA_default',
@@ -399,7 +400,8 @@ function setupAuthority(customConfiguration){
             };
         }
 
-        if(customConfiguration === undefined){
+        if(customConfiguration === undefined ||
+            customConfiguration === {}){
             authorityConfiguration = defaultConfiguration();
         }
         else{
@@ -558,6 +560,18 @@ function fetchKeyAndCertificate(name){
     }
 }
 
+function isReady(){
+    //instead of _dirname should be the rootDir
+    console.log(__dirname+'/config.cnf');
+    return fs.existsSync(__dirname+'/config.cnf')
+}
+
+function hasIdentity(organization){
+    return fs.existsSync(__dirname+'/issuedCertificates/'+organization+'/'+organization+'.cert');
+}
+
+exports.hasIdentity                   = hasIdentity;
+exports.isReady                       = isReady;
 exports.generateIdentity              = generateIdentity;
 exports.setupAuthority                = setupAuthority;
 exports.generateCertificationRequest  = generatePendingRequest;

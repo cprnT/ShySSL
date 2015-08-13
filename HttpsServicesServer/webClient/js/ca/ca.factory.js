@@ -19,61 +19,14 @@ myApp.factory('certificationAuthorityFactory',function($rootScope,$location,$htt
 
         },
 
-        getCertificate:function(magicCode){
 
-            function validateNameRegistration(nameRegistration) {
-
-                function jsonifyAdditionalInformation(str) {
-                    var addInfo = {};
-                    try {
-                        addInfo = JSON.parse(str);
-                        for(var field in addInfo){
-                            nameRegistration[field] = addInfo[field];
-                        }
-                        delete nameRegistration.additionalInfo;
-                    } catch (e) {
-                        console.log(e);
-                        return false;
-                    }
-                    return true;
-                }
-
-                if (nameRegistration.hasOwnProperty('additionalInfo')) {
-                    if (!jsonifyAdditionalInformation(nameRegistration.additionalInfo)) {
-                        alert('!!!');
-                        return false;
-                    }
-                }
-
-                if(!nameRegistration.hasOwnProperty('name')){
-                    return false;
-                }
-
-                else{
-                    if(nameRegistration.name === ""){
-                        return false;
-                    }
-                }
+        setupCertificationAuthority:function(configuration){
+            function validateConfiguration(name){
                 return true;
             }
 
-            var information = JSON.parse(magicCode.toString('ASCII'));
-            if(validateNameRegistration(nameRegistration)){
-                return $http.post('http://localhost:3000/registerName',nameRegistration);
-            }
-            else{
-                throw "Invalid name registration"
-            }
-
-        },
-
-        setupCertificationAuthority:function(name){
-            function validateName(name){
-                return name !== '';
-            }
-
-            if(validateName(name)) {
-                return $http.get('http://localhost:3000/lookup/' + name);
+            if(validateConfiguration(configuration)) {
+                return $http.post('http://localhost:3000/setupCertificationAuthority',configuration );
             }
             else{
                 throw 'Invalid name'
@@ -81,9 +34,10 @@ myApp.factory('certificationAuthorityFactory',function($rootScope,$location,$htt
 
         },
 
-        fetchIdentity:function(name){
-            return $http.get("http://localhost:3000/fetchIdentity/"+name);
+        checkIdentity:function(organization){
+            return $http.get('http://localhost:3000/hasIdentity/'+organization);
         }
+
 
     }
 });

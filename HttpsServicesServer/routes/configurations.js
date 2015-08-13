@@ -1,7 +1,7 @@
 /**
  * Created by Ciprian on 8/3/15.
  */
-var configs = require('./configurationsService/configurationService.js');
+var configs = require('../services/configurationsService/configurationService.js');
 
 exports.retrieveConfiguration = function (req,res){
 
@@ -19,7 +19,7 @@ exports.retrieveConfiguration = function (req,res){
 
 exports.setupConfigurationService = function(req,res){
     configs.setupConfigService(req.body);
-    res.sendStatus(404);
+    res.sendStatus(200);
 };
 
 exports.persistConfiguration = function(req,res){
@@ -43,4 +43,8 @@ exports.retrieveUsages = function(req,res){
         res.sendStatus(404);
     }
     configs.retrieveUsages(req.params.organization).then(respond,treatError);
+};
+
+exports.isReady = function(){
+    return configs.isReady();
 };

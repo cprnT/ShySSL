@@ -35,8 +35,11 @@
 
 <body>
 
-<div class="head-bar">
-  <button type="button" ng-click="logout()" style={{logoutButtonVsibility}} class="btn btn-primary">Logout</button>
+<div class="head-bar" >
+  <div style={{headBarStyle}}>
+    <button type="button" ng-click="logout()" style="float:right" class="btn btn-primary">Logout</button>
+    <button type="button" ng-click="goHome()" class="btn btn-primary">Home</button>
+  </div>
 </div>
 
 <div class="sidebar" >

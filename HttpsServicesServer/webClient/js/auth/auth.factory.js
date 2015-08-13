@@ -35,9 +35,23 @@ myApp.factory('UserAuthFactory', function($rootScope, $window, $location, $http,
 
         $rootScope.certificates = [];
         $rootScope.loginMessage = "Certificates will be displayed after you log in" ;
-        $rootScope.logoutButtonVsibility="visibility:hidden";
         $location.path("/login");
       }
+    },
+    checkServerAvailability:function(){
+      return $http.get('http://localhost:3000/checkServer').success(function(response){
+        $rootScope.headBarStyle = "visibility:visible";
+        $rootScope.serverInfo.caAvailability = response.ca;
+        $rootScope.serverInfo.nsAvailability = response.ns;
+        $rootScope.serverInfo.cnfAvailability= response.cnf;
+        if($rootScope.serverInfo.nsAvailability){
+          $rootScope.displayOrganizations();
+        }
+      },function(error){
+        alert('An error appeared while checking server availability\nSee console for further details')
+        console.log(error);
+          });
+
     }
   }
 });

@@ -1,33 +1,38 @@
-<ul style="float:left">
-    <li>
-     <button type="submit" ng-click="askNameService()" class="btn btn-primary" >See name information</button>
-    <ul ng-show="hasNameInfo" ng-repeat="(key,value) in nameServiceResponse">
-            <div>{{key}} : {{value}}</div>
-        </ul>
-        <div ng-show="nsUnavailable">
-            No information available
-        </div>
-    </li>
 
-    <li>
-    <button type="submit" ng-click="askForConfigurations()" class="btn btn-primary" > Check available configurations</button>
-    <ul ng-show="hasConfigurations" ng-repeat="usage in usages">
-            <a ng-click = "seeConfiguration(usage)">
-                {{usage}}
-            </a>
-            <div ng-show = "fetchedConfiguration[usage]">
-                {{configs[usage]}}
-                <br>
-            </div>
-    </ul>
 
-    <div ng-show="configurationsUnavailable">
-        No configurations available
+    <h1>{{selectedOrganization}}</h1>
+    <br>
+    <div ng-repeat="(key,value) in nameInformation">
+            <h3>{{key}} : {{value}}</h3>
     </div>
-    </li>
+    <br>
 
-    <li>
-        <a href="http://localhost:3000/fetchIdentity/{{selectedOrganization}}" class="btn btn-primary">Get Identity</a>
-    </li>
-</ul>
+    <a ng-show="hasIdentity" href="http://localhost:3000/fetchIdentity/{{selectedOrganization}}" class="btn btn-primary">Get Identity</a>
+    <a ng-show="needsIdentity&&serverInfo.caAvailability" href="http://localhost:3000/#/registerForCertification" class="btn btn-primary">Register for certification</a>
+
+    <br>
+
+    <div ng-show="hasConfigurations">
+        <h3>Available configurations:</h3>
+        <br>
+            <div ng-repeat="usage in usages" style="display:inline">
+                <a ng-click="seeConfiguration(usage)" class = "btn btn-primary" >
+                    {{usage}}
+                </a>
+            </div>
+        <br>
+            <div style="float:right" class >
+                <a href="http://localhost:3000/#/addConfiguration" class="btn btn-primary"> Add another configuration</a>
+            </div>
+        <br>
+
+        <div ng-show="hasSelectedConfiguration">
+            <h3>{{selectedUsage}} Configuration:</h3>
+                        <div style="display:inline" ng-repeat ="(key,value) in selectedConfiguration">
+                <div>{{key}} : {{value}}</div>
+            </div>
+        </div>
+    </div>
+
+
 

@@ -3,24 +3,24 @@
  */
 
 
-var certAuthority = require('./certificationAuthority/certificationAuthority.js');
+var certAuthority = require('../services/certificationAuthority/certificationAuthority.js');
 var zip      = require('adm-zip');
 var fs            = require('fs');
 
 function packKeyAndCertificates(files){
     var zipper = new zip();
-    zipper.addLocalFile(files+'.key');
+    zipper.addLocalFile(files.path+'.key');
     zipper.addLocalFile(files.path+'.cert');
     zipper.addLocalFile(files.issuerCertificate);
-    zipper.writeZip(files+'.zip');
-    return files+'.zip';
-};
-
+    zipper.writeZip(files.path+'.zip');
+    return files.path+'.zip';
+}
 exports.issueCertificate = function(req,res){
-
-    certAuthority.generateIdentity(req,params.code).
-        then(packKeyAndCertificates,function(error){res.json(error)}).
+    console.log('IssueCertificate for code '+req.params.code);
+    certAuthority.generateIdentity(req.params.code).
+        then(packKeyAndCertificates,function(error){console.log(error);res.json(error)}).
         then(function(zip){
+            console.log('second zipping');
             res.download(zip);
         });
 };
@@ -51,4 +51,15 @@ exports.registerForCertification = function(req,res){
             res.send(magicCode)
         },
             function(error){res.json(error)});
+};
+
+exports.isReady = function(){
+    return certAuthority.isReady();
+};
+exports.hasIdentity = function(req,res){
+    if(certAuthority.hasIdentity(req.params.organization)){
+        res.sendStatus(200);
+    }else{
+        res.sendStatus(404);
+    }
 };

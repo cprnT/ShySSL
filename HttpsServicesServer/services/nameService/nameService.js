@@ -9,6 +9,7 @@ var writeFileAsync = Q.denodeify(fs.writeFile);
 var mkdirAsync     = Q.denodeify(fs.mkdir);
 var readFileAsync  = Q.denodeify(fs.readFile);
 var readDirAsync   = Q.denodeify(fs.readdir);
+
 var serviceConfiguration  = {
     isLoaded : false
 };
@@ -86,7 +87,6 @@ function registerOrganization(organizationInformation){
         }
     }
 
-
     function persistInformation(storageConfiguration, storageOptions, informationToBePersisted){
         switch(storageConfiguration.mode) {
             case'file':{
@@ -103,6 +103,7 @@ function registerOrganization(organizationInformation){
             }
         }
     }
+
     return persistInformation(  serviceConfiguration.storage,
                                 extractPersistenceOptions(serviceConfiguration.storage,organizationInformation),
                                 extractInformationToBePersisted(organizationInformation));
@@ -117,13 +118,18 @@ function lookUp(organization){
 }
 
 function retrieveAllNames(){
+
     if(!serviceConfiguration.isLoaded){
         loadService(__dirname+'/config.cnf');
     }
     return readDirAsync(__dirname+'/storage');
 }
 
+function isReady(){
+    return fs.existsSync(__dirname+'/config.cnf')
+}
 
+exports.isReady              = isReady;
 exports.lookup               = lookUp;
 exports.registerOrganization = registerOrganization;
 exports.setup                = setup;

@@ -1337,7 +1337,7 @@ p {
 }
 
 .content .container-maverix {
-    width: 680px;
+    width:680px;
     margin: 0 auto;
     font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;
     font-size: 13px;
@@ -1497,18 +1497,6 @@ div.heading-bar .heading-one img {
     border-right-color: #56586f;
     background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #d3f7fd), color-stop(.5, #87c5fb), color-stop(.5, #a1d1f9), color-stop(1, #d4e9fc));
     background-image: -moz-linear-gradient(center bottom, #d3f7fd 0, #87c5fb 50%, #a1d1f9 50%, #d4e9fc 100%);
-    -webkit-animation-name: blinking;
-    -webkit-animation-timing-function: ease-in-out;
-    -webkit-animation-iteration-count: infinite;
-    -webkit-animation-duration: 1s;
-    -moz-animation-name: blinking;
-    -moz-animation-timing-function: ease-in-out;
-    -moz-animation-iteration-count: infinite;
-    -moz-animation-duration: 1s;
-    animation-name: blinking;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-    animation-duration: 1s;
 }
 
 .btn.btn-primary:active {

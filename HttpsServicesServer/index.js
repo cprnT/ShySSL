@@ -7,7 +7,6 @@
 var express=require('express');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
-
 var app=express();
 
 app.use(bodyParser.json());
@@ -31,7 +30,12 @@ app.all('/*', function(req, res, next) {
 app.all('sensitive/*',[require('./middlewares/validateRequest.js')]);
 
 app.use('/',require('./routes/router.js'));
-app.use(express.static('../webClient'));
+
+var webClient = process.argv[2];
+if(!webClient){
+    webClient = "./webClient";
+}
+app.use(express.static(webClient));
 
 app.use(function(req,res,next){
    var err = new Error ('Not found');

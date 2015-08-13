@@ -19,6 +19,9 @@ function setupConfigurationService(configuration){
     if(configuration === undefined) {
         fs.mkdirSync(__dirname + '/configurations');
     }
+    else{
+        fs.mkdirSync(__dirname + '/configurations');
+    }
     //should be able to customize... we'll go with this for now
 }
 
@@ -28,8 +31,6 @@ function persistConfiguration(configuration) {
     function persist() {
         return fs.writeFileSync(__dirname+'/configurations/' + org + '/' + org + '.' + configuration.usage + '.conf', configuration.content);
     }
-
-
     return mkdirAsync(__dirname + '/configurations/' + org).
         then(persist, persist);
 }
@@ -52,6 +53,10 @@ function retrieveUsages(organization){
 }
 
 
+function isReady(){
+    return fs.existsSync(__dirname+'/configurations')
+}
+exports.isReady              = isReady;
 
 exports.retrieveConfiguration = retrieveConfiguration;
 

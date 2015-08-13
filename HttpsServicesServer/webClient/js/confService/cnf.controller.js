@@ -7,7 +7,6 @@ myApp.controller('addConfigurationController',['$scope','$rootScope','configurat
     function($rootScope,$scope,configurationServiceFactory) {
         $scope.usages = [];
         $scope.configuration = {};
-
         $scope.getUsages = function () {
             if ($scope.configuration.organization.name !== "") {
                 configurationServiceFactory.retrieveUsages($scope.configuration.organization).then(function (retrievedUsages) {
@@ -21,6 +20,7 @@ myApp.controller('addConfigurationController',['$scope','$rootScope','configurat
             $scope.newUsage = true;
             $scope.configuration.content = "";
         };
+
         $scope.hideNewUsage = function () {
             $scope.newUsage = false;
             $scope.configuration.usage = "";
@@ -62,3 +62,20 @@ myApp.controller('addConfigurationController',['$scope','$rootScope','configurat
             }
         };
     }]);
+
+
+myApp.controller('setupConfigurationServiceController',['$scope','$rootScope','configurationServiceFactory',
+    function($scope,$rootScope,configurationServiceFactory){
+
+        $scope.configuration = {};
+        $scope.setupConfigurationService = function(){
+            function success(){console.log('configuration service installed')}
+            function onError(err){
+                alert('an error occured\nsee console for further details');
+                console.log(err);
+            }
+            configurationServiceFactory.setupConfigurationService($scope.configuration).then(success,onError);
+        }
+
+    }
+]);

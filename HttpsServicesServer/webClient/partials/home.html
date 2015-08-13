@@ -1,29 +1,31 @@
-<div class="container" ng-controller="HomeCtrl">
-  <div class="page-header">
-    <h3>This is from {{ name }}</h3>
-  </div>
+<h1>
+    This is the administrative tool for the httpsServices server
+</h1>
+<div ng-show="serverInfo.caAvailability&&serverInfo.nsAvailability&&serverInfo.cnfAvailability">
+    <h3>
+        On the left are all the registered organizations<br>
+        Click on one to see more details<br><br>
 
+        By using the following button you can add new organizations to your network <br><br>
+        <a href="http://localhost:3000/#/registerName" ng-show="serverInfo.nsAvailability" class="btn btn-primary"> Add new organization</a>
 
-  <p class="lead">This app is scaffolded by
-    <code>slush-ng</code></p>
+    </h3>
+</div>
+<div ng-show="!(serverInfo.caAvailability&&serverInfo.nsAvailability&&serverInfo.cnfAvailability)">
+    <h3>
+        Before being able to perform any operations you must fully configure your server</h3> <br>
 
-  <p class="lead">This app uses <code>Bootstrap</code> for styling. If you are looking to add functional Bootstrap components, refer <a href="http://angular-ui.github.io/bootstrap/" target="_blank">UI Bootstrap</a>.
-  </p>
-
-  <p class="lead">This app is baked in with
-    <ul>
-      <li>Gulp - A task runner</li>
-      <li>Bower - A client side dependency manager</li>
-    </ul>
-  </p>
-
-  <p class="lead">This app comes integrated with
-    <code>angular-route</code>,
-    <code>controllers</code>, a sample
-    <code>directive</code> and a sample
-    <code>filter</code>
-  </p>
-
-  <p class="lead">This app also has a sample <code>factory</code> layer, that can be used to interact with RESTful services (includes an example too).</p>
+        <div ng-show="!serverInfo.caAvailability&&!serverInfo.nsAvailability&&!serverInfo.cnfAvailability">
+           <h3> For a default full configurations use the following button</h3><br>
+            <button type="button" ng-click="setupServer()"  class="btn btn-primary" >
+                Setup server services with default values
+            </button>
+        </div>
+        <br>
+        <br>
+        <h3>If you have other prefferences use the following facilities:</h3><br>
+    <a href="http://localhost:3000/#/setupNameService"  ng-show="!serverInfo.nsAvailability" class="btn btn-primary">Setup nameService</a><br>
+    <a href="http://localhost:3000/#/setupCertificationAuthority"  ng-show="!serverInfo.caAvailability" class="btn btn-primary">Setup certificationAuthority</a><br>
+    <a href="http://localhost:3000/#/setupConfigurationService"  ng-show="!serverInfo.cnfAvailability" class="btn btn-primary">Setup configurationService</a><br>
 
 </div>

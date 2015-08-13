@@ -9,21 +9,17 @@ myApp.controller("HeaderCtrl", ['$scope', '$location', 'UserAuthFactory',
   }
 ]);
 
-myApp.controller("homeController", ['$scope',
-  function($scope) {
+myApp.controller("homeController", ['$scope','$location','UserAuthFactory','$http','$timeout',
+  function($scope,$location,UserAuthFactory,$http,$timeout) {
     $scope.name = "homeController";
-  }
-]);
 
-myApp.controller("certificateController", ['$scope','$rootScope','$routeParams',
-  function($rootScope,$scope,$routeParams) {
-
-    for (var certificate = 0; certificate < certificates.length; certificate++) {
-      if(certificates[certificate].organization === $routeParams.organization){
-        $scope.currentCertificate = certificates[certificate];
-        break;
-      }
-    }
+    $scope.setupServer = function(){
+      $http.get('http://localhost:3000/setupServer').then(
+      UserAuthFactory.checkServerAvailability,function(err){
+            console.log(err);
+            alert('an error appeared\nsee console for further details')
+          });
+    };
   }
 ]);
 

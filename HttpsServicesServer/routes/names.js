@@ -2,7 +2,8 @@
  * Created by Ciprian on 8/3/15.
  */
 
-var nameService = require('./nameService/nameService.js');
+var nameService = require('../services/nameService/nameService.js');
+var confService = require('../services/configurationsService/configurationService.js');
 
 exports.setupNameService = function(req,res){
     console.log('Setup name service\n');
@@ -30,7 +31,20 @@ exports.registerName = function(req,res){
         console.log(util.inspect(error));
         res.json(error);
     }
+    function createRelayConfiguration(){
+        if(!confService.isReady()){
+            confService.setupConfigService();
+        }
+        var relayConf = {};
+        relayConf.usage = "relay";
+        relayConf.organization = req.body.name;
+        delete req.body.name;
+        relayConf.content = JSON.stringify(req.body);
+        confService.persistConfiguration(relayConf);
+    }
+
     nameService.registerOrganization(req.body).
+        then(createRelayConfiguration).
         then(succesfullRegistration,unsuccesfullRegistration);
 };
 
@@ -40,10 +54,17 @@ exports.retrieveAllNames = function(req,res){
         res.send(files);
     }
     function unsuccessfulRetrieval(error){
-        console.log(util.inspect(error));
         res.json(error);
     }
-    nameService.retrieveAllNames().then(successfulRetrieval,unsuccessfulRetrieval);
+    if(nameService.isReady()) {
+        nameService.retrieveAllNames().then(successfulRetrieval, unsuccessfulRetrieval);
+    }else{
+        res.send("Please setup nameService first");
+    }
+};
+
+exports.isReady = function(){
+    return nameService.isReady();
 };
 
 

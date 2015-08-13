@@ -19,8 +19,7 @@ myApp.factory('nameServiceFactory',function($rootScope,$location,$http){
 
         },
 
-        register:function(nameRegistration){
-
+        registerName:function(nameRegistration){
             function validateNameRegistration(nameRegistration) {
 
                 function jsonifyAdditionalInformation(str) {

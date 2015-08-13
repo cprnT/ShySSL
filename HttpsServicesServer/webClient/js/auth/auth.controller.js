@@ -21,8 +21,8 @@ myApp.controller('LoginCtrl', ['$scope','$rootScope', '$window', '$location', 'U
           $location.path("/");
 
 
-          $rootScope.logoutButtonVsibility="visibility:visible";
-          $rootScope.displayOrganizations();
+          $rootScope.logoutStyle="float:right;visibility:visible";
+          UserAuthFactory.checkServerAvailability();
         }).error(function(status) {
           alert('Oops something went wrong!');
         });

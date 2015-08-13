@@ -12,6 +12,7 @@ var certificates = require('./certificates.js');
 var configurations= require('./configurations.js');
 var authentication = require('./authentication.js');
 
+
 function setupServer(req,res){
     var nameService = require('../services/nameService/nameService.js');
     var certAuthority = require('../services/certificationAuthority/certificationAuthority.js');
@@ -28,12 +29,26 @@ function setupServer(req,res){
     }
 }
 
+function checkServer(req,res){
+    var caAvailability = certificates.isReady();
+    var nsAvailability = names.isReady();
+    var confAvailability = configurations.isReady();
+
+    res.json({
+        ca:caAvailability,
+        ns:nsAvailability,
+        cnf:confAvailability
+    })
+}
+
 router.get('/setupServer',setupServer);
+router.get('/checkServer',checkServer);
 
 router.post('/setupCertificationAuthority',certificates.setupCertificationAuthority);
 router.post('/registerForCertification',certificates.registerForCertification);
 router.get('/autoconfig/:code',certificates.issueCertificate);
 router.get('/fetchIdentity/:organization',certificates.fetchIdentity);
+router.get('/hasIdentity/:organization',certificates.hasIdentity);
 
 router.post('/setupNameService',names.setupNameService);
 router.post('/registerName',names.registerName);
