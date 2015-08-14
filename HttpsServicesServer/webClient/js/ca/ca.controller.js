@@ -12,10 +12,13 @@ myApp.controller('registerForCertificationController',['$scope','$rootScope','ce
     $scope.hasMagicCode = false;
     $scope.registerForCertification =function(){
         function manageResponse(response){
-            alert('The code to be used by the client:\n',response);
+            $scope.magicCode = response;
+            $scope.hasMagicCode=true;
+
         }
         function treatError(error){
             alert('An error occured\nsee the console for further details');
+            $scope.hasMagicCode = false;
             console.log(error);
         }
 

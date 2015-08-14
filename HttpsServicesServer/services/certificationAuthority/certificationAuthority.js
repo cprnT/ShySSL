@@ -247,8 +247,7 @@ function generatePendingRequest(organizationInformation) {
             then(attachSecrets).
             then(attachMagicCode).
             then(persistOrganizationInformation).
-            then(function(){return {
-                magicCode:organizationInformation.magicCode}}).   //to use it in identityGeneration
+            then(function(){return {magicCode:organizationInformation.magicCode}}).   //to use it in identityGeneration
             catch(treatErrors);
     }
     else{

@@ -25,12 +25,6 @@ myApp.config(function($routeProvider, $httpProvider) {
               requiredLogin: false
           }
 
-      }).when('/certificates/organization/:organization', {
-          templateUrl: 'partials/certificationAuthority/certificate.html',
-          controller: 'certificateController',
-          access: {
-              requiredLogin: true
-          }
       }).when('/setupCertificationAuthority',{
           templateUrl:'partials/certificationAuthority/setupCertificationAuthority.html',
           controller :'setupCertificationAuthorityController',

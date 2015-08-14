@@ -11,7 +11,7 @@ myApp.factory('configurationServiceFactory',function($rootScope,$location,$http)
             }
 
             if(validateConfiguration(configuration)){
-                return $http.post('http://localhost:3000/setupConfigurationService',configuration);
+                return $http.post('http://'+$location.host()+':'+$location.port()+'/setupConfigurationService',configuration);
             }
             else{
                 throw 'Invalid configuration'
@@ -35,7 +35,7 @@ myApp.factory('configurationServiceFactory',function($rootScope,$location,$http)
             }
 
             if(validateOrganization(confiouration)){
-                return $http.post('http://localhost:3000/configure',confiouration);
+                return $http.post('http://'+$location.host()+':'+$location.port()+'/configure',confiouration);
             }
             else{
                 throw 'Invalid data '
@@ -44,12 +44,12 @@ myApp.factory('configurationServiceFactory',function($rootScope,$location,$http)
 
         retrieveUsages:function(organizationName){
             if(organizationName !== "") {
-                return $http.get('http://localhost:3000/retrieveUsages/' + organizationName);
+                return $http.get('http://'+$location.host()+':'+$location.port()+'/retrieveUsages/' + organizationName);
             }
         },
 
         retrieveConfiguration:function(organizationName,usage){
-            return $http.get('http://localhost:3000/retrieveConfiguration/'+organizationName+'/'+usage);
+            return $http.get('http://'+$location.host()+':'+$location.port()+'/retrieveConfiguration/'+organizationName+'/'+usage);
         }
     }
 });

@@ -11,7 +11,7 @@ myApp.factory('certificationAuthorityFactory',function($rootScope,$location,$htt
             }
 
             if(validateOrganization(organization)){
-                return $http.post('http://localhost:3000/registerForCertification',organization);
+                return $http.post('http://'+$location.host()+':'+$location.port()+'/registerForCertification',organization);
             }
             else{
                 throw 'Invalid data for organization'
@@ -26,7 +26,7 @@ myApp.factory('certificationAuthorityFactory',function($rootScope,$location,$htt
             }
 
             if(validateConfiguration(configuration)) {
-                return $http.post('http://localhost:3000/setupCertificationAuthority',configuration );
+                return $http.post('http://'+$location.host()+':'+$location.port()+'/setupCertificationAuthority',configuration );
             }
             else{
                 throw 'Invalid name'
@@ -35,7 +35,7 @@ myApp.factory('certificationAuthorityFactory',function($rootScope,$location,$htt
         },
 
         checkIdentity:function(organization){
-            return $http.get('http://localhost:3000/hasIdentity/'+organization);
+            return $http.get('http://'+$location.host()+':'+$location.port()+'/hasIdentity/'+organization);
         }
 
 

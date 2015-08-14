@@ -7,8 +7,7 @@
         Click on one to see more details<br><br>
 
         By using the following button you can add new organizations to your network <br><br>
-        <a href="http://localhost:3000/#/registerName" ng-show="serverInfo.nsAvailability" class="btn btn-primary"> Add new organization</a>
-
+        <a ng-href="{{host}}/#/registerName" ng-show="serverInfo.nsAvailability" class="btn btn-primary"> Add new organization</a>
     </h3>
 </div>
 <div ng-show="!(serverInfo.caAvailability&&serverInfo.nsAvailability&&serverInfo.cnfAvailability)">
@@ -24,8 +23,8 @@
         <br>
         <br>
         <h3>If you have other prefferences use the following facilities:</h3><br>
-    <a href="http://localhost:3000/#/setupNameService"  ng-show="!serverInfo.nsAvailability" class="btn btn-primary">Setup nameService</a><br>
-    <a href="http://localhost:3000/#/setupCertificationAuthority"  ng-show="!serverInfo.caAvailability" class="btn btn-primary">Setup certificationAuthority</a><br>
-    <a href="http://localhost:3000/#/setupConfigurationService"  ng-show="!serverInfo.cnfAvailability" class="btn btn-primary">Setup configurationService</a><br>
+    <a ng-href="{{host}}/#/setupNameService"  ng-show="!serverInfo.nsAvailability" class="btn btn-primary">Setup nameService</a><br>
+    <a ng-href="{{host}}/#/setupCertificationAuthority"  ng-show="!serverInfo.caAvailability" class="btn btn-primary">Setup certificationAuthority</a><br>
+    <a ng-href="{{host}}/#/setupConfigurationService"  ng-show="!serverInfo.cnfAvailability" class="btn btn-primary">Setup configurationService</a><br>
 
 </div>

@@ -4,9 +4,9 @@
  */
 
 
-myApp.controller('organizationController',['$scope','$rootScope','configurationServiceFactory',
+myApp.controller('organizationController',['$scope','$rootScope','$location','configurationServiceFactory',
                 'nameServiceFactory','certificationAuthorityFactory',
-    function($rootScope,$scope,configurationServiceFactory,nameServiceFactory,certificationAuthorityFactory) {
+    function($rootScope,$scope,$location,configurationServiceFactory,nameServiceFactory,certificationAuthorityFactory) {
         $scope.hasConfigurations = false;
         $scope.hasCertificate = false;
         $scope.hasNameInfo = false;
@@ -16,7 +16,7 @@ myApp.controller('organizationController',['$scope','$rootScope','configurationS
         $scope.hasSelectedConfiguration = false;
         $scope.selectedConfiguration = {};
         $scope.fetchedConfigurations = {};
-
+        $scope.host = "http://"+$location.host()+':'+$location.port();
         $scope.hasIdentity = false;
         $scope.needsIdentity=false;
 

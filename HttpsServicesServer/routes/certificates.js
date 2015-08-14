@@ -20,7 +20,6 @@ exports.issueCertificate = function(req,res){
     certAuthority.generateIdentity(req.params.code).
         then(packKeyAndCertificates,function(error){console.log(error);res.json(error)}).
         then(function(zip){
-            console.log('second zipping');
             res.download(zip);
         });
 };
@@ -47,8 +46,7 @@ exports.setupCertificationAuthority = function(req,res){
 exports.registerForCertification = function(req,res){
     certAuthority.generateCertificationRequest(req.body).
         then(function(magicCode) {
-            console.log(magicCode);
-            res.send(magicCode)
+            res.send(magicCode.magicCode)
         },
             function(error){res.json(error)});
 };

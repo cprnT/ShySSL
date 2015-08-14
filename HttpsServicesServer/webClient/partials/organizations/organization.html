@@ -7,8 +7,8 @@
     </div>
     <br>
 
-    <a ng-show="hasIdentity" href="http://localhost:3000/fetchIdentity/{{selectedOrganization}}" class="btn btn-primary">Get Identity</a>
-    <a ng-show="needsIdentity&&serverInfo.caAvailability" href="http://localhost:3000/#/registerForCertification" class="btn btn-primary">Register for certification</a>
+    <a ng-show="hasIdentity" ng-href="{{host}}/fetchIdentity/{{selectedOrganization}}" class="btn btn-primary">Get Identity</a>
+    <a ng-show="needsIdentity&&serverInfo.caAvailability" ng-href="{{host}}/#/registerForCertification" class="btn btn-primary">Register for certification</a>
 
     <br>
 
@@ -22,7 +22,7 @@
             </div>
         <br>
             <div style="float:right" class >
-                <a href="http://localhost:3000/#/addConfiguration" class="btn btn-primary"> Add another configuration</a>
+                <a ng-href="{{host}}/#/addConfiguration" class="btn btn-primary"> Add another configuration</a>
             </div>
         <br>
 

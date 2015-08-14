@@ -11,7 +11,7 @@ myApp.factory('nameServiceFactory',function($rootScope,$location,$http){
             }
 
             if(validateConfiguration(configuration)){
-                return $http.post('http://localhost:3000/setupNameService',configuration);
+                return $http.post('http://'+$location.host()+':'+$location.port()+'/setupNameService',configuration);
             }
             else{
                 throw 'Invalid configuration'
@@ -57,7 +57,7 @@ myApp.factory('nameServiceFactory',function($rootScope,$location,$http){
             }
 
             if(validateNameRegistration(nameRegistration)){
-                return $http.post('http://localhost:3000/registerName',nameRegistration);
+                return $http.post('http://'+$location.host()+':'+$location.port()+'/registerName',nameRegistration);
             }
             else{
                 throw "Invalid name registration"
@@ -71,7 +71,7 @@ myApp.factory('nameServiceFactory',function($rootScope,$location,$http){
             }
 
             if(validateName(name)) {
-                return $http.get('http://localhost:3000/lookup/' + name);
+                return $http.get('http://'+$location.host()+':'+$location.port()+'/lookup/' + name);
             }
             else{
                 throw 'Invalid name'
@@ -80,7 +80,7 @@ myApp.factory('nameServiceFactory',function($rootScope,$location,$http){
         },
 
         retrieveAllNames:function(){
-            return $http.get('http://localhost:3000/retrieveAllNames');
+            return $http.get('http://'+$location.host()+':'+$location.port()+'/retrieveAllNames');
         }
 
     }

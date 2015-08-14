@@ -34,6 +34,11 @@
                 <button type="submit" ng-click="registerForCertification()" class="btn btn-primary" >Request certificate</button>
 
             </form>
+
+
+            <div ng-show="hasMagicCode" style="color:green">
+                The code to be used by the client is: {{magicCode}}
+            </div>
         </div>
     </div>
 </form>

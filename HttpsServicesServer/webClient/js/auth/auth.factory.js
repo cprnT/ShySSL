@@ -17,7 +17,7 @@ myApp.factory('AuthenticationFactory', function($window) {
 myApp.factory('UserAuthFactory', function($rootScope, $window, $location, $http, AuthenticationFactory) {
   return {
     login: function(username, password) {
-      return $http.post('http://localhost:3000/login', {
+      return $http.post('http://'+$location.host()+':'+$location.port()+'/login', {
         username: username,
         password: password
       });
@@ -39,7 +39,7 @@ myApp.factory('UserAuthFactory', function($rootScope, $window, $location, $http,
       }
     },
     checkServerAvailability:function(){
-      return $http.get('http://localhost:3000/checkServer').success(function(response){
+      return $http.get('http://'+$location.host()+':'+$location.port()+'/checkServer').success(function(response){
         $rootScope.headBarStyle = "visibility:visible";
         $rootScope.serverInfo.caAvailability = response.ca;
         $rootScope.serverInfo.nsAvailability = response.ns;
