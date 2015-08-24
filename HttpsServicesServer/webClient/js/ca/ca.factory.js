@@ -4,6 +4,7 @@
 
 myApp.factory('certificationAuthorityFactory',function($rootScope,$location,$http){
     return{
+
         registerForCertification:function(organization){
 
             function validateOrganization(organization){
@@ -36,8 +37,11 @@ myApp.factory('certificationAuthorityFactory',function($rootScope,$location,$htt
 
         checkIdentity:function(organization){
             return $http.get('http://'+$location.host()+':'+$location.port()+'/hasIdentity/'+organization);
-        }
+        },
 
+        fetchCodes  : function(organization){
+            return $http.get('http://'+$location.host()+':'+$location.port()+'/fetchCodes/'+organization);
+        }
 
     }
 });

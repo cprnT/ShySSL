@@ -6,7 +6,6 @@ var configs = require('../services/configurationsService/configurationService.js
 exports.retrieveConfiguration = function (req,res){
 
     function respond(config){
-
         res.send(config.toString());
     }
     function treatError(error){

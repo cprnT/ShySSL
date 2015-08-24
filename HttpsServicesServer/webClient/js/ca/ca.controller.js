@@ -9,12 +9,14 @@
 myApp.controller('registerForCertificationController',['$scope','$rootScope','certificationAuthorityFactory',function($scope,$rootScope,certificationAuthorityFactory){
 
     $scope.organization = {};
+    $scope.organization.O=$rootScope.selectedOrganization;
     $scope.hasMagicCode = false;
     $scope.registerForCertification =function(){
         function manageResponse(response){
-            $scope.magicCode = response;
-            $scope.hasMagicCode=true;
-
+            console.log(response);
+            $scope.magicCode = response.magicCode;
+            $scope.directLink=response.directLink;
+            $scope.canBeDownloaded=true;
         }
         function treatError(error){
             alert('An error occured\nsee the console for further details');

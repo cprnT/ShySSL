@@ -1,2 +1,2 @@
 #!/bin/bash
-node HttpsServicesServer/index.js /HttpsServicesServer/webClient
+node HttpsServicesServer/index.js /HttpsServicesServer/webClient $requestUrl

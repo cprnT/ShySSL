@@ -26,6 +26,26 @@
                     <input type="text" class="form-control" id="port" placeholder="Enter the port number" ng-model="organization.port">
                 </div>
 
+
+
+                <div class="form-group">
+                    <label >Country name</label>
+                    <input type="text" class="form-control" placeholder="Enter the countryName" ng-model="certification.C">
+                </div>
+
+                <div class="form-group">
+                    <label >stateOrProvinceName</label>
+                    <input type="text" class="form-control"  placeholder="Enter the stateOrProvinceName" ng-model="certification.L">
+                </div>
+                <div class="form-group">
+                    <label >organizationalUnitName</label>
+                    <input type="text" class="form-control" placeholder="Enter the organizationalUnitName" ng-model="certification.OU">
+                </div>
+                <div class="form-group">
+                    <label >stateOrProvinceName</label>
+                    <input type="text" class="form-control"  placeholder="Enter the commonName" ng-model="certification.CN">
+                </div>
+
                 <div class="form-group">
                     <label for="additional input">Additional information in JSON format</label><br>
                     <textarea ng-model="organization.additionalInfo" id="additional input" cols="50" rows="10" ></textarea>
@@ -33,6 +53,11 @@
                 </div>
 
                 <button type="submit" ng-click="registerName()" class="btn btn-primary" >Register</button>
+
+                <div ng-show="canBeDownloaded">
+                    <div style="color:green">The code to be used by the client is: </div>{{magicCode}}<br>
+                    <p >The direct link to download is <a style="color:red" ng-href="http://{{directLink}}">this</a></p>
+                </div>
             </form>
         </div>
     </div>

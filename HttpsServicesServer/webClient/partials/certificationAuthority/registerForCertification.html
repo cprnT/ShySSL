@@ -4,8 +4,7 @@
             <form role="form">
 
                 <div class="form-group">
-                    <label >Organization</label>
-                    <input type="text" class="form-control" placeholder="Enter the organizationName" ng-model="organization.O" ng-required>
+                    <h3>Name: {{organization.O}}</h3>
                 </div>
 
 
@@ -14,7 +13,7 @@
                     <input type="text" class="form-control" placeholder="Enter the emailAddress" ng-model="organization.emailAddress">
                 </div>
                 <div class="form-group">
-                    <label ></label>
+                    <label >Country name</label>
                     <input type="text" class="form-control" placeholder="Enter the countryName" ng-model="organization.C">
                 </div>
 
@@ -36,8 +35,9 @@
             </form>
 
 
-            <div ng-show="hasMagicCode" style="color:green">
-                The code to be used by the client is: {{magicCode}}
+            <div ng-show="canBeDownloaded">
+                <div style="color:green">The code to be used by the client is: </div>{{magicCode}}<br>
+                <p >The direct link to download is <a style="color:red" ng-href="http://{{directLink}}">this</a></p>
             </div>
         </div>
     </div>

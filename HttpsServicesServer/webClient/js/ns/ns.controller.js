@@ -13,6 +13,7 @@ myApp.controller('lookupNameController',['$scope','$rootScope','nameServiceFacto
             function success(response){
                 $scope.organization={};
                 $scope.response = response.data;
+
             }
             function onError(){
                 $scope.organization={};
@@ -42,19 +43,42 @@ myApp.controller('setupNameServiceController',['$scope','nameServiceFactory',fun
     }
 }]);
 
-myApp.controller('registerNameController',['$scope','nameServiceFactory',function($scope,nameServiceFactory){
+myApp.controller('registerNameController',['$scope','$rootScope','$location','nameServiceFactory',"certificationAuthorityFactory",
+    function($scope,$rootScope,$location,nameServiceFactory,certificationAuthorityFactory){
 
     $scope.organization = {};
+    $scope.certification ={};
+    $scope.getCertification = function(){
+        $scope.certification.O = $scope.organization.name;
+        $scope.certification.emailAddress = organization.email;
+        $rootScope.updateSelectedOrganization($scope.organization.name);
+        function manageResponse(){
+            $location.path('/organizations/'+$rootScope.selectedOrganization);
+        }
 
-    $scope.registerName = function(){
-        function success(){
-            console.log('Name registered');
+        function treatError(error){
+            alert('An error occured\nsee the console for further details');
+            console.log(error);
         }
-        function onError(err){
-            alert('An error occured\n See console for further details');
-            console.log(err);
+
+        certificationAuthorityFactory.registerForCertification($scope.certification).success(manageResponse).error(treatError);
+    };
+
+
+        $scope.registerName = function(){
+            function success(){
+                console.log('Name registered');
+                $scope.getCertification();
+            }
+            function onError(err){
+                alert('An error occured\n See console for further details');
+                console.log(err);
+            }
+            nameServiceFactory.registerName($scope.organization).success(success).error(onError);
         }
-        nameServiceFactory.registerName($scope.organization).then(success,onError);
-    }
+
+
+
+
 
 }]);

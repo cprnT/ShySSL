@@ -24,11 +24,10 @@ exports.lookup = function(req,res){
 
 exports.registerName = function(req,res){
     function succesfullRegistration(){
-        console.log("Name service registering "+util.inspect(req.body)+"\n");
         res.sendStatus(200);
     }
     function unsuccesfullRegistration(error){
-        console.log(util.inspect(error));
+        console.log('!!!!!!!!!!!!!!!!!!!!!!'+util.inspect(error));
         res.json(error);
     }
     function createRelayConfiguration(){
@@ -41,11 +40,13 @@ exports.registerName = function(req,res){
         delete req.body.name;
         relayConf.content = JSON.stringify(req.body);
         confService.persistConfiguration(relayConf);
+        res.sendStatus(200);
+
     }
 
     nameService.registerOrganization(req.body).
         then(createRelayConfiguration).
-        then(succesfullRegistration,unsuccesfullRegistration);
+        catch(unsuccesfullRegistration);
 };
 
 

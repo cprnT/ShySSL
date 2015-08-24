@@ -8,9 +8,14 @@ var Q = require ('q');
 var fs = require ('fs');
 
 
+var requestUrl = process.argv[3];
+console.log('request url: '+process.argv[3]);
+if(!requestUrl){
+    requestUrl = "localhost:3000";
+}
+
 var writeFileAsync = Q.denodeify(fs.writeFile);
 var mkdirAsync     = Q.denodeify(fs.mkdir);
-var requestUrl     = "localhost:3000";
 var readFileAsync  = Q.denodeify(fs.readFile);
 var authorityConfiguration = { isLoaded: false};
 
@@ -130,11 +135,10 @@ function generateIdentity ( code ) {
             console.log('something got wrong\n');
         }
     }
-    function returnPaths(){
-        return {
-            path              : authorityConfiguration.fileStructure.new_certs_dir+'/'+data.organization+'/'+data.organization,
-            issuerCertificate : authorityConfiguration.fileStructure.certificate
-        }
+    function returnOrganizationName(){
+        return data.organization;
+
+
     }
     return fetchDataToGenerateIdentity().
         then(createDirectoryForOrganization).
@@ -143,7 +147,7 @@ function generateIdentity ( code ) {
         then(issueCertificate).
         then(undefined,checkCertificate).
         then(deleteUnnecessaryInformation).
-        then(returnPaths).
+        then(returnOrganizationName).
         catch(treatErrors);
 }
 
@@ -230,7 +234,8 @@ function generatePendingRequest(organizationInformation) {
         organizationInformation.magicCode = JSON.stringify({
             url:requestUrl,
             code: organizationInformation.code,
-            key: organizationInformation.key
+            key: organizationInformation.key,
+            name:organizationInformation.O
         });
 
         organizationInformation.magicCode = new Buffer(organizationInformation.magicCode).toString('base64');
@@ -238,6 +243,28 @@ function generatePendingRequest(organizationInformation) {
         //console.log(">>>>>>>>>>>>>>>>>>>>", organizationInformation.magicCode);
     }
 
+
+    function persistCodes(){
+        var identityInformation = {
+            key:organizationInformation.key,
+            code:organizationInformation.code
+        };
+
+        return writeFileAsync(authorityConfiguration.fileStructure.codes_dir+'/'+organizationInformation.O,
+            JSON.stringify(identityInformation)).then(function(){
+                var accessInformation = {};
+                accessInformation.directLink = requestUrl+'/autoconfig/'+identityInformation.code;
+
+                accessInformation.magicCode  = new Buffer(JSON.stringify({
+                    url:requestUrl,
+                    code:organizationInformation.code,
+                    key:organizationInformation.key,
+                    name:organizationInformation.O
+                })).toString('base64');
+
+            return accessInformation;
+        });
+    }
     function treatErrors(error){
         console.log(error+'\n');
     }
@@ -247,7 +274,7 @@ function generatePendingRequest(organizationInformation) {
             then(attachSecrets).
             then(attachMagicCode).
             then(persistOrganizationInformation).
-            then(function(){return {magicCode:organizationInformation.magicCode}}).   //to use it in identityGeneration
+            then(persistCodes).
             catch(treatErrors);
     }
     else{
@@ -255,7 +282,22 @@ function generatePendingRequest(organizationInformation) {
     }
 }
 
+function fetchCodes(organization){
+    return readFileAsync(authorityConfiguration.fileStructure.codes_dir+'/'+organization).then(function(stringCodes){
+        var codes = JSON.parse(stringCodes);
+        var accessInformation = {};
 
+        accessInformation.directLink=requestUrl+'/autoconfig/'+codes.code;
+
+        accessInformation.magicCode =new Buffer(JSON.stringify({
+            url:requestUrl,
+            code:codes.code,
+            key:codes.key
+        })).toString('base64');
+
+        return accessInformation;
+    })
+}
 function absolutizeFileStructure(){
     var fileStructure = authorityConfiguration.fileStructure;
     if(!fileStructure.hasOwnProperty('rootDir')){
@@ -279,7 +321,7 @@ function loadService(){
         var index = 0;
         var expectedFileFields = ['rootDir','database','new_certs_dir',
             'certificate','serial','private_key',
-            'RANDFILE','configs_dir','keys_dir'];
+            'RANDFILE','configs_dir','keys_dir','codes_dir'];
         var expectedPolicyOptions = ['countryName','stateOrProvinceName','organizationName',
             'organizationalUnitName','commonName','emailAddress'];
         var expectedOptions = ['default_days','default_crl_days','default_md',
@@ -351,8 +393,6 @@ function loadService(){
     authorityConfiguration.isLoaded = true;
     absolutizeFileStructure();
 }
-
-
 function setupAuthority(customConfiguration){
     function setDesiredConfiguration(customConfiguration){
         function defaultConfiguration(){
@@ -375,7 +415,8 @@ function setupAuthority(customConfiguration){
                 private_key  :'$rootDir/private/caPrivateKey.pem',
                 RANDFILE     :'$rootDir/private/random.txt',
                 configs_dir  :'$rootDir/pendingRequests/configs',
-                keys_dir     :'$rootDir/pendingRequests/keys'
+                keys_dir     :'$rootDir/pendingRequests/keys',
+                codes_dir    :'$rootDir/pendingRequests/codes'
             };
 
             var defaultOptions = {
@@ -541,22 +582,18 @@ function setupAuthority(customConfiguration){
         });
 }
 
-function fetchKeyAndCertificate(name){
+function fetchIdentity(name){
     if(!authorityConfiguration.isLoaded) {
         loadService();
     }
     var zip = require('adm-zip');
     var zipper = new zip();
     var dir = authorityConfiguration.fileStructure.new_certs_dir+'/'+name+'/'+name;
-    try {
-        zipper.addLocalFile(dir + '.key');
-        zipper.addLocalFile(dir + '.cert');
-        zipper.writeZip(dir + '.zip');
-        return dir + '.zip';
-    }
-    catch(e){
-        throw e;
-    }
+    zipper.addLocalFile(dir + '.key');
+    zipper.addLocalFile(dir + '.cert');
+    zipper.addLocalFile(authorityConfiguration.fileStructure.certificate);
+    zipper.writeZip(dir + '.zip');
+    return dir + '.zip';
 }
 
 function isReady(){
@@ -574,6 +611,6 @@ exports.isReady                       = isReady;
 exports.generateIdentity              = generateIdentity;
 exports.setupAuthority                = setupAuthority;
 exports.generateCertificationRequest  = generatePendingRequest;
-exports.fetchKeyAndCertificate        = fetchKeyAndCertificate;
-
+exports.fetchIdentity                 = fetchIdentity;
+exports.fetchCodes                    = fetchCodes;
 

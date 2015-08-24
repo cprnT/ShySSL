@@ -8,7 +8,12 @@
     <br>
 
     <a ng-show="hasIdentity" ng-href="{{host}}/fetchIdentity/{{selectedOrganization}}" class="btn btn-primary">Get Identity</a>
-    <a ng-show="needsIdentity&&serverInfo.caAvailability" ng-href="{{host}}/#/registerForCertification" class="btn btn-primary">Register for certification</a>
+
+    <div ng-show="needsIdentity&&serverInfo.caAvailability">
+        <a ng-href="http://{{directLink}}" class="btn btn-primary">Generate your identity</a>
+        <br>
+        <h3 style="color:red">The following code can be used by the cliend: {{magicCode}}</h3>
+    </div>
 
     <br>
 

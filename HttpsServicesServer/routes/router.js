@@ -49,6 +49,7 @@ router.post('/registerForCertification',certificates.registerForCertification);
 router.get('/autoconfig/:code',certificates.issueCertificate);
 router.get('/fetchIdentity/:organization',certificates.fetchIdentity);
 router.get('/hasIdentity/:organization',certificates.hasIdentity);
+router.get('/fetchCodes/:organization',certificates.fetchCodes);
 
 router.post('/setupNameService',names.setupNameService);
 router.post('/registerName',names.registerName);
@@ -62,7 +63,6 @@ router.get('/retrieveConfiguration/:organization/:usage',configurations.retrieve
 router.get('/retrieveUsages/:organization',configurations.retrieveUsages);
 
 router.post('/login',authentication.login);
-
 
 
 module.exports = router;

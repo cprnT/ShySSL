@@ -25,10 +25,20 @@ myApp.controller('organizationController',['$scope','$rootScope','$location','co
                 function(result){
                         $scope.hasIdentity = true;
                 },function(errr){
-                    $scope.needsIdentity = true;
+                    certificationAuthorityFactory.fetchCodes($rootScope.selectedOrganization).
+                        then(function(codes){
+                            console.log(codes);
+                            $scope.directLink = codes.data.directLink;
+                            $scope.magicCode  = codes.data.magicCode;
+                            $scope.needsIdentity = true;
+                        },function(error){
+                            alert('an error occured\nsee console for further details');
+                            console.log(error);
+                        })
                 }
             )
         };
+
         checkIdentity($rootScope.selectedOrganization);
 
         $scope.askNameService = function(){
