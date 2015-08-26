@@ -24,6 +24,9 @@ myApp.controller('organizationController',['$scope','$rootScope','$location','co
             certificationAuthorityFactory.checkIdentity(org).then(
                 function(result){
                         $scope.hasIdentity = true;
+                        certificationAuthorityFactory.fetchCodes($rootScope.selectedOrganization).then(function(codes){
+                            $scope.magicCode  = codes.data.magicCode;
+                        })
                 },function(errr){
                     certificationAuthorityFactory.fetchCodes($rootScope.selectedOrganization).
                         then(function(codes){

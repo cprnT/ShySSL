@@ -9,8 +9,8 @@
 
     <a ng-show="hasIdentity" ng-href="{{host}}/fetchIdentity/{{selectedOrganization}}" class="btn btn-primary">Get Identity</a>
 
-    <div ng-show="needsIdentity&&serverInfo.caAvailability">
-        <a ng-href="http://{{directLink}}" class="btn btn-primary">Generate your identity</a>
+    <div ng-show="serverInfo.caAvailability">
+        <a ng-show="needsIdentity" ng-href="http://{{directLink}}" class="btn btn-primary">Generate your identity</a>
         <br>
         <h3 style="color:red">The following code can be used by the cliend: {{magicCode}}</h3>
     </div>
