@@ -1,11 +1,7 @@
 <div class="row">
     <div class="col-md-12">
         <form role="form">
-            <div class="form-group">
-                <label for="Organization"></label>
-                <input type="text" ng-blur = "getUsages()" ng-model="configuration.organization" class="form-control"  placeholder="Enter the organization">
-            </div>
-
+            <h2>{{selectedOrganization}}</h2>
             <div class="form-group">
                 <label>Select configuration usage</label>
                 <select  ng-model="configuration.usage" ng-change="retrieveConfiguration()">
@@ -29,6 +25,7 @@
 
             <div>
                 <input type="submit" value="Submit" ng-click="addNewConfiguration()"/>
+                <br>
                 <div  style="color:#00FF00" ng-show="submissionSuccess">Succesful!</div>
                 <div  style="color:#B22222" ng-show="submissionFailure">Unsuccesful submition!</div>
             </div>

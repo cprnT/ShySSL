@@ -13,13 +13,13 @@ myApp.controller('organizationController',['$scope','$rootScope','$location','co
         $scope.nsUnavailable = false;
         $scope.configurationsUnavailable = false;
         $scope.selectedUsage = undefined;
-        $scope.hasSelectedConfiguration = false;
+        $scope.displayConfiguration = false;
         $scope.selectedConfiguration = {};
         $scope.fetchedConfigurations = {};
         $scope.host = "http://"+$location.host()+':'+$location.port();
         $scope.hasIdentity = false;
         $scope.needsIdentity=false;
-
+        $scope.askForNewUsage=false;
         checkIdentity = function(org){
             certificationAuthorityFactory.checkIdentity(org).then(
                 function(result){
@@ -63,7 +63,6 @@ myApp.controller('organizationController',['$scope','$rootScope','$location','co
                 });
         };
 
-
         $scope.askForConfigurations = function(){
 
             configurationServiceFactory.retrieveUsages($rootScope.selectedOrganization).then(
@@ -82,7 +81,6 @@ myApp.controller('organizationController',['$scope','$rootScope','$location','co
             )
         };
 
-
         $scope.askForConfigurations();
         $scope.askNameService();
 
@@ -90,20 +88,20 @@ myApp.controller('organizationController',['$scope','$rootScope','$location','co
             $scope.selectedUsage = usage;
             if($scope.selectedConfiguration === $scope.fetchedConfigurations[usage]){
                 $scope.selectedConfiguration = undefined;
-                $scope.hasSelectedConfiguration = false;
+                $scope.displayConfiguration = false;
                 $scope.selectedUsage = undefined;
                 return;
             }
 
             if($scope.fetchedConfigurations[usage]){
                 $scope.selectedConfiguration = $scope.fetchedConfigurations[usage];
-                $scope.hasSelectedConfiguration = true;
+                $scope.displayConfiguration = true;
                 return;
             }
 
             configurationServiceFactory.retrieveConfiguration($rootScope.selectedOrganization,usage).
                 then(function(result){
-                    $scope.hasSelectedConfiguration = true;
+                    $scope.displayConfiguration = true;
                     $scope.fetchedConfigurations[usage] = result.data;
                     $scope.selectedConfiguration = $scope.fetchedConfigurations[usage];
                 },function(error){
@@ -114,13 +112,23 @@ myApp.controller('organizationController',['$scope','$rootScope','$location','co
 
         $scope.fetchIdentity      = function(){
             certificationAuthorityFactory.fetchIdentity($rootScope.selectedOrganization).then(
-                function(response){
-
-                },
-                function(error){
-                    console.log(error);
-                }
+                function(response){},
+                function(error){console.log(error);}
             )
+        }
+
+        $scope.editConfiguration = function(){
+            $scope.addNewConfiguration = false;
+            $scope.displayConfiguration= false;
+
+
+        };
+
+        $scope.addConfiguration = function(){
+            $scope.addNewConfiguration = true;
+            $scope.newUsage            = "";
+            $scope.askForNewUsage      = true;
+            $scope.editConfiguration();
         }
 
 

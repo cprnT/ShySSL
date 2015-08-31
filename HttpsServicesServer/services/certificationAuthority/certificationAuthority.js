@@ -7,13 +7,15 @@ var util = require ('util');
 var Q = require ('q');
 var fs = require ('fs');
 
-
-var requestUrl = process.argv[3];
-console.log('request url: '+process.argv[3]);
-if(!requestUrl){
-    requestUrl = "localhost:3000";
+if(process.argv.length !== 4){
+    console.log('Not enough arguments\n' + 'The arguments should be: wwwroot serverUrl');
+    process.exit(2);
 }
 
+var requestUrl = process.argv[3];
+
+
+console.log('The request url: '+requestUrl);
 var writeFileAsync = Q.denodeify(fs.writeFile);
 var mkdirAsync     = Q.denodeify(fs.mkdir);
 var readFileAsync  = Q.denodeify(fs.readFile);
@@ -247,7 +249,8 @@ function generatePendingRequest(organizationInformation) {
     function persistCodes(){
         var identityInformation = {
             key:organizationInformation.key,
-            code:organizationInformation.code
+            code:organizationInformation.code,
+            name:organizationInformation.O
         };
 
         return writeFileAsync(authorityConfiguration.fileStructure.codes_dir+'/'+organizationInformation.O,
@@ -283,6 +286,9 @@ function generatePendingRequest(organizationInformation) {
 }
 
 function fetchCodes(organization){
+    if(!authorityConfiguration.isLoaded){
+        loadService();
+    }
     return readFileAsync(authorityConfiguration.fileStructure.codes_dir+'/'+organization).then(function(stringCodes){
         var codes = JSON.parse(stringCodes);
         var accessInformation = {};
@@ -292,7 +298,8 @@ function fetchCodes(organization){
         accessInformation.magicCode =new Buffer(JSON.stringify({
             url:requestUrl,
             code:codes.code,
-            key:codes.key
+            key:codes.key,
+            name:codes.name
         })).toString('base64');
 
         return accessInformation;

@@ -7,6 +7,7 @@ myApp.controller('addConfigurationController',['$scope','$rootScope','configurat
     function($rootScope,$scope,configurationServiceFactory) {
         $scope.usages = [];
         $scope.configuration = {};
+        $scope.configuration.organization = $rootScope.selectedOrganization;
         $scope.getUsages = function () {
             if ($scope.configuration.organization.name !== "") {
                 configurationServiceFactory.retrieveUsages($scope.configuration.organization).then(function (retrievedUsages) {

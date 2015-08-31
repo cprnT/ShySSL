@@ -2,8 +2,6 @@
  * Created by Ciprian on 7/24/15.
  */
 
-
-
 var express=require('express');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
@@ -12,9 +10,6 @@ var app=express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(logger('dev'));
-
-
-
 
 app.all('sensitive/*',[require('./middlewares/validateRequest.js')]);
 
@@ -33,9 +28,11 @@ app.use(function(req,res,next){
     next(err);
 });
 
+var port =process.argv[3].split(':');
+port = port[port.length-1];
 
-app.set('port',process.env.PORT||3000);
+app.set('port',port||3000);
 var server=app.listen(app.get('port'),function(){
-    console.log("We have started our server on port " + app.get('port'));
+    console.log('We have started on port: '+port);
 });
 

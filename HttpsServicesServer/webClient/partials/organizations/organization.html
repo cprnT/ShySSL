@@ -12,7 +12,8 @@
     <div ng-show="serverInfo.caAvailability">
         <a ng-show="needsIdentity" ng-href="http://{{directLink}}" class="btn btn-primary">Generate your identity</a>
         <br>
-        <h3 style="color:red">The following code can be used by the cliend: {{magicCode}}</h3>
+        <h3 style="color:red">The following code can be used by the client:</h3>
+        <textarea cols="30" rows="4" readonly ng-model="magicCode"></textarea>
     </div>
 
     <br>
@@ -25,17 +26,20 @@
                     {{usage}}
                 </a>
             </div>
+        <a ng-href="{{host}}/#/addConfiguration" class="btn btn-primary"> + </a>
         <br>
-            <div style="float:right" class >
-                <a ng-href="{{host}}/#/addConfiguration" class="btn btn-primary"> Add another configuration</a>
-            </div>
         <br>
 
-        <div ng-show="hasSelectedConfiguration">
+        <div ng-show="displayConfiguration">
             <h3>{{selectedUsage}} Configuration:</h3>
                         <div style="display:inline" ng-repeat ="(key,value) in selectedConfiguration">
                 <div>{{key}} : {{value}}</div>
             </div>
+        </div>
+
+        <div ng-show="askForNewUsage">
+            <input type="text" autofocus placeholder="Enter the new usage"
+                   ng-model="newUsage" onblur="editConfiguration()">
         </div>
     </div>
 
