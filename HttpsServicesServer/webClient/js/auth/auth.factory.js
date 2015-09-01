@@ -52,6 +52,19 @@ myApp.factory('UserAuthFactory', function($rootScope, $window, $location, $http,
         console.log(error);
           });
 
+    },
+    registerUser:function(user,password){
+      return $http.post('http://'+$location.host()+':'+$location.port()+'/registerUser',{
+        user:user,
+        password:password
+      });
+    },
+    changePassword:function(user,oldPassword,newPassword){
+      return $http.post('http://'+$location.host()+':'+$location.port()+'/changePassword',{
+        user:user,
+        password:oldPassword,
+        newPassword:newPassword
+      });
     }
   }
 });

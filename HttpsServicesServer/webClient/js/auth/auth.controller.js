@@ -32,5 +32,18 @@ myApp.controller('LoginCtrl', ['$scope','$rootScope', '$window', '$location', 'U
 
     };
 
+
   }
 ]);
+
+myApp.controller('registerUserController',['$scope','UserAuthFactory',function($scope,UserAuthFactory){
+  $scope.user = {};
+  $scope.registerUser = function(){
+    if(user.password!==user.confirmPassword){
+      return;
+    }
+
+    UserAuthFactory.registerUser(user.name,user.password).then
+  }
+
+}]);

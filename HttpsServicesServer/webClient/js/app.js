@@ -58,19 +58,6 @@ myApp.config(function($routeProvider, $httpProvider) {
               requiredLogin: true
           }
 
-      }).when('/lookupName',{
-          templateUrl:'partials/nameService/lookupName.html',
-          controller :'lookupNameController',
-          access:{
-              requiredLogin:true
-          }
-
-      }).when('/addConfiguration', {
-          templateUrl: 'partials/configurationService/addConfiguration.html',
-          controller: 'addConfigurationController',
-          access: {
-              requiredLogin: true
-          }
 
       }).when('/setupConfigurationService', {
           templateUrl: 'partials/configurationService/setupConfigurationService.html',
@@ -84,6 +71,12 @@ myApp.config(function($routeProvider, $httpProvider) {
           controller:'organizationController',
           access:{
                 requiredLogin:true
+          }
+      }).when('/registerUser',{
+          templateUrl:'partials/authentication/registerUser.html',
+          controller:'authController',
+          access:{
+              requiredLogin:true
           }
       }).otherwise({
           redirectTo: '/login'

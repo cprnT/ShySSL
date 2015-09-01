@@ -18,28 +18,11 @@ myApp.factory('configurationServiceFactory',function($rootScope,$location,$http)
             }
 
         },
-        addNewConfiguration:function(confiouration){
+        addNewConfiguration:function(organization,usage,configuration){
 
+                return $http.post('http://'+$location.host()+':'+$location.port()+
+                    '/addConfiguration/'+organization+'/'+usage,configuration);
 
-            function jsonify(str) {
-                try {
-                    JSON.parse(str);
-                } catch (e) {
-                    return false;
-                }
-                return true;
-            }
-
-            function validateOrganization(confiouration){
-                return jsonify(confiouration.content);
-            }
-
-            if(validateOrganization(confiouration)){
-                return $http.post('http://'+$location.host()+':'+$location.port()+'/configure',confiouration);
-            }
-            else{
-                throw 'Invalid data '
-            }
         },
 
         retrieveUsages:function(organizationName){

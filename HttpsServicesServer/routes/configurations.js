@@ -26,9 +26,13 @@ exports.persistConfiguration = function(req,res){
         res.sendStatus(200);
     }
     function treatError(error){
-        res.send(JSON.stringify(error));
+        res.sendStatus(404);
     }
-    configs.persistConfiguration(req.body).
+    configs.persistConfiguration(
+        req.params.organization,
+        req.params.usage,
+        JSON.stringify(req.body)
+        ).
         then(respond,treatError);
 };
 

@@ -18,30 +18,42 @@
 
     <br>
 
-    <div ng-show="hasConfigurations">
-        <h3>Available configurations:</h3>
+    <div>
+        <h3 ng-show="!configurationsUnavailable">Available configurations:</h3>
+        <h3 ng-show="configurationsUnavailable">Add configurations</h3>
         <br>
             <div ng-repeat="usage in usages" style="display:inline">
-                <a ng-click="seeConfiguration(usage)" class = "btn btn-primary" >
+                <a ng-click="editConfiguration(usage)" class = "btn btn-primary" >
                     {{usage}}
                 </a>
             </div>
-        <a ng-href="{{host}}/#/addConfiguration" class="btn btn-primary"> + </a>
+        <br>
+        <br>
+    </div>
+
+    <div ng-show="readyToEdit">
+        <div ng-show="askForNewUsage">
+            <h3>Type here the usage of this new configuration (*required)</h3>
+            <input type="text" ng-model="newUsage.content" >
+        </div>
+        <div ng-show="!askForNewUsage">
+            <h3>{{selectedUsage}}</h3>
+        </div>
         <br>
         <br>
 
-        <div ng-show="displayConfiguration">
-            <h3>{{selectedUsage}} Configuration:</h3>
-                        <div style="display:inline" ng-repeat ="(key,value) in selectedConfiguration">
-                <div>{{key}} : {{value}}</div>
-            </div>
+        <textarea cols="50" rows="10" ng-model="selectedConfiguration.content"></textarea>
+        <a ng-click="updateConfiguration()" class = "btn btn-primary" >Update</a>
+
+        <div style="color:red" ng-show="invalidJson">
+            <h4>Invalid JSON format...</h4>
         </div>
 
-        <div ng-show="askForNewUsage">
-            <input type="text" autofocus placeholder="Enter the new usage"
-                   ng-model="newUsage" onblur="editConfiguration()">
+        <div style="color:red" ng-show="noUsage">
+            <h4>You need to fill the usage field...</h4>
         </div>
     </div>
+
 
 
 

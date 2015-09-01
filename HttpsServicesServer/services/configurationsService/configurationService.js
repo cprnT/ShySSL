@@ -25,13 +25,11 @@ function setupConfigurationService(configuration){
     //should be able to customize... we'll go with this for now
 }
 
-function persistConfiguration(configuration) {
-    var org = configuration.organization;
-
+function persistConfiguration(organization,usage,content) {
     function persist() {
-        return fs.writeFileSync(__dirname+'/configurations/' + org + '/' + org + '.' + configuration.usage + '.conf', configuration.content);
+        return fs.writeFileSync(__dirname+'/configurations/' + organization + '/' + organization + '.' + usage + '.conf', content);
     }
-    return mkdirAsync(__dirname + '/configurations/' + org).
+    return mkdirAsync(__dirname + '/configurations/' + organization).
         then(persist, persist);
 }
 

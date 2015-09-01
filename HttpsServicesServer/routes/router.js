@@ -11,7 +11,7 @@ var names = require('./names.js');
 var certificates = require('./certificates.js');
 var configurations= require('./configurations.js');
 var authentication = require('./authentication.js');
-
+var fs = require('fs');
 
 function setupServer(req,res){
     var nameService = require('../services/nameService/nameService.js');
@@ -19,6 +19,7 @@ function setupServer(req,res){
     var confService = require('../services/configurationsService/configurationService.js');
 
     try {
+        fs.mkdir('../users');
         nameService.setup(req.body.nameServiceConfiguration);
         certAuthority.setupAuthority(req.body.certificationAuthorityConfiguration);
         confService.setupConfigService(req.body.configurationsServiceConfigurations);
@@ -58,11 +59,12 @@ router.get('/retrieveAllNames',names.retrieveAllNames);
 
 
 router.post('/setupConfigurationService',configurations.setupConfigurationService);
-router.post('/configure',configurations.persistConfiguration);
+router.post('/addConfiguration/:organization/:usage',configurations.persistConfiguration);
 router.get('/retrieveConfiguration/:organization/:usage',configurations.retrieveConfiguration);
 router.get('/retrieveUsages/:organization',configurations.retrieveUsages);
 
 router.post('/login',authentication.login);
-
+router.post('/changePassword',authentication.changePassword);
+router.post('/registerUser',authentication.registerUser);
 
 module.exports = router;

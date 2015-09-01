@@ -1,5 +1,7 @@
 var jwt = require('jwt-simple');
-
+var fs  = require('fs');
+var q   = require('q');
+var readFileAsync = q.denodeify(fs.readFile);
 var auth = {
 
   login: function(req, res) {
@@ -17,16 +19,19 @@ var auth = {
     }
 
     // Fire a query to your DB and check if the credentials are valid
-    var dbUserObj = auth.validate(username, password);
-   
-    if (!dbUserObj) { // If authentication fails, we send a 401 back
-      res.status(401);
-      res.json({
-        "status": 401,
-        "message": "Invalid credentials"
-      });
-      return;
-    }
+    auth.validate(username, password).then(function(dbUserObj){
+      if(dbUserObj.hasOwnProperty('name')){
+        res.json(genToken(dbUserObj));
+      }
+      else{
+        res.status(401);
+        res.json({
+          "status": 401,
+          "message": "Invalid credentials"
+        });
+      }
+    });
+
 
     if (dbUserObj) {
 
@@ -38,22 +43,66 @@ var auth = {
 
   },
 
-  validate: function(username, password) {
+  changePassword:function(req,res){
+    var username = req.body.username || '';
+    var password = req.body.oldPassword || '';
+    var newPassword = req.body.newPassword || '';
+    if(username === '' || password === '' || newPassword === '') {
+      res.send('Empty fields not allowed');
+    }
 
-    if((username === 'admin') && (password === 'swarm')) {
-      return {
-        name: 'admin',
-        role: 'admin',
-        username: 'administrator'
+    auth.validate(username,password).then(function(result){
+      if(result.hasOwnProperty('name')){
+        //valid user
+        auth.setPassword(username,newPassword);
+        res.sendStatus(200);
+      }else{
+        res.send('Invalid user or password');
       }
-    }
-    if((username === 'regularUser') && (password === 'swarm')){
-      return{
-        name: 'regularUser',
-        role: 'regularUser',
-        username:'regularUser'
-      }
-    }
+    });
+  },
+
+  registerUser:function(req,res){
+    var path = '../users/';
+    var user = req.body.user;
+    var password = req.body.password;
+    readFileAsync(path+user).then(
+        function(content){
+          res.sendStatus(401);
+        },
+        function(){
+          fs.writeFileSync(path+user,password);
+          res.sendStatus(200);
+        })
+  }
+  ,
+  setPassword:function(username,password){
+    var path = '../users/';
+    return writeFileAsync(path+username,password);
+  },
+
+  validate: function(username, password) {
+    return fs.readFileAsync('../users/'+username).then(
+        function(content){
+          if(password === content){
+            if(username === 'admin'){
+              return {
+                name:'admin',
+                role:'admin'
+              }
+            }else{
+              return{
+                name:username,
+                role:'regularUser'
+              }
+            }
+          }else{
+            return 'Invalid user or password';
+          }
+        },
+      function(error){
+        return error.toString();
+      });
   }
 };
 
